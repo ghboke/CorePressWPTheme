@@ -1,0 +1,133 @@
+.hljs-comment,
+.hljs-quote {
+    color: #969896;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+    color: #ff8383;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+    color: #de935f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+    color: #e9d27e;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+    color: #b5f4a5;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+    color: #93ddfd;
+}
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+    color: #d9a9ff;
+}
+
+.hljs {
+    display: block;
+    overflow-x: auto;
+    background: #2d3748;
+    color: #c5c8c6;
+    padding: 0.5em;
+}
+
+.hljs-emphasis {
+    font-style: italic;
+}
+
+.hljs-strong {
+    font-weight: bold;
+}
+
+
+pre.corepress-code-pre code {
+    position: relative;
+    border-radius: 5px;
+    max-height: 500px;
+    overflow: auto;
+    padding: 10px 20px;
+   }
+
+.corepress-code-pre:hover .code-bar {
+    visibility: visible;
+    opacity: 1;
+}
+
+.code-bar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 5px 10px;
+    visibility: hidden;
+    opacity: 0;
+    transition: .3s;
+}
+
+.code-bar-btn-copy {
+    border: none;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.05);
+    padding: 2px 5px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.code-bar-btn-copy-fonticon {
+    color: #fff;
+    cursor: pointer;
+}
+pre[class='corepress-code-pre'] {
+    position: relative;
+    font-size: 14px;
+    border-radius: 4px;
+    margin: 0;
+    padding: 0;
+    max-height: unset;
+    overflow: unset;
+}
+
+
+.hljs ul {
+    list-style: decimal;
+    margin: 0px 0px 0 20px !important;
+    padding: 0px;
+}
+.hljs ul li {
+    list-style: decimal-leading-zero;
+    border-left: 1px solid #ddd !important;
+    padding: 5px!important;
+    margin: 0 !important;
+    line-height: 14px;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+.hijs-line-number {
+
+}

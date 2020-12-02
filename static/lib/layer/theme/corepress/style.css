@@ -1,0 +1,9 @@
+body .corepress-layer .layui-layer-title {
+    border-bottom: none;
+    background-color: #fff;
+    font-size: 16px;
+}
+body .corepress-layer {
+    border-radius: 6px;
+    overflow: hidden;
+}

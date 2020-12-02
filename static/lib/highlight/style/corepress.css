@@ -1,0 +1,115 @@
+.hljs-comment, .hljs-quote {
+    color: #696969
+}
+
+.hljs-deletion, .hljs-name, .hljs-regexp, .hljs-selector-class, .hljs-selector-id, .hljs-tag, .hljs-template-variable, .hljs-variable {
+    color: #d91e18
+}
+
+.hljs-built_in, .hljs-builtin-name, .hljs-link, .hljs-literal, .hljs-meta, .hljs-number, .hljs-params, .hljs-type {
+    color: #aa5d00
+}
+
+.hljs-attribute {
+    color: #aa5d00
+}
+
+.hljs-addition, .hljs-bullet, .hljs-string, .hljs-symbol {
+    color: green
+}
+
+.hljs-section, .hljs-title {
+    color: #007faa
+}
+
+.hljs-keyword, .hljs-selector-tag {
+    color: #7928a1
+}
+
+.hljs {
+    display: block;
+    overflow-x: auto;
+    color: #545454;
+    padding: .5em
+}
+
+.hljs-emphasis {
+    font-style: italic
+}
+
+.hljs-strong {
+    font-weight: 700
+}
+
+@media screen and (-ms-high-contrast: active) {
+    .hljs-addition, .hljs-attribute, .hljs-built_in, .hljs-builtin-name, .hljs-bullet, .hljs-comment, .hljs-link, .hljs-literal, .hljs-meta, .hljs-number, .hljs-params, .hljs-quote, .hljs-string, .hljs-symbol, .hljs-type {
+        color: highlight
+    }
+
+    .hljs-keyword, .hljs-selector-tag {
+        font-weight: 700
+    }
+}
+
+
+pre.corepress-code-pre code {
+    position: relative;
+    border-radius: 5px;
+    background: #fafafa;
+    max-height: 500px;
+    overflow: auto;
+    padding: 10px 20px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, sans-serif;
+}
+
+.corepress-code-pre:hover .code-bar {
+    visibility: visible;
+    opacity: 1;
+}
+
+.code-bar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 5px 10px;
+    visibility: hidden;
+    opacity: 0;
+    transition: .3s;
+}
+
+.code-bar-btn-copy {
+    border: none;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.05);
+    padding: 2px 5px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.code-bar-btn-copy-fonticon {
+    cursor: pointer;
+}
+pre[class='corepress-code-pre'] {
+    position: relative;
+    font-size: 14px;
+    border-radius: 4px;
+    margin: 0;
+    padding: 0;
+    max-height: unset;
+    overflow: unset;
+    background-color: #fafafa;
+}
+
+.hljs ul {
+    list-style: decimal;
+    margin: 0px 0px 0 20px !important;
+    padding: 0px;
+}
+.hljs ul li {
+    list-style: decimal-leading-zero;
+    border-left: 1px solid #ddd !important;
+    padding: 5px!important;
+    margin: 0 !important;
+    line-height: 14px;
+    word-break: break-all;
+    word-wrap: break-word;
+}
