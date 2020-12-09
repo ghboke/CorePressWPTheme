@@ -89,20 +89,23 @@ remove_filter('the_content', 'balanceTags'); //禁止对标签自动校正
 
 
 if ($set['optimization']['removeversion'] === 1) {
-    add_filter( 'script_loader_src', 'mimvp_remove_wp_version_strings' );
-    add_filter( 'style_loader_src', 'mimvp_remove_wp_version_strings' );
+    add_filter('script_loader_src', 'mimvp_remove_wp_version_strings');
+    add_filter('style_loader_src', 'mimvp_remove_wp_version_strings');
     add_filter('the_generator', 'mimvp_remove_version');
 }
 
-function mimvp_remove_wp_version_strings( $src ) {
+function mimvp_remove_wp_version_strings($src)
+{
     global $wp_version;
     parse_str(parse_url($src, PHP_URL_QUERY), $query);
-    if ( !empty($query['ver']) && $query['ver'] === $wp_version ) {
+    if (!empty($query['ver']) && $query['ver'] === $wp_version) {
         $src = remove_query_arg('ver', $src);
     }
     return $src;
 }
-function mimvp_remove_version() {
+
+function mimvp_remove_version()
+{
     return '';
 }
 
@@ -146,9 +149,9 @@ if ($set['optimization']['closerest'] === 1) {
 }
 if ($set['optimization']['closeupdate'] === 1) {
     // 禁止 WordPress 检查更新
-/*    remove_action('admin_init', '_maybe_update_core');
-    remove_action('admin_init', '_maybe_update_plugins');
-    remove_action('admin_init', '_maybe_update_themes');*/
+    /*    remove_action('admin_init', '_maybe_update_core');
+        remove_action('admin_init', '_maybe_update_plugins');
+        remove_action('admin_init', '_maybe_update_themes');*/
 
 }
 if ($set['optimization']['banimgresolving'] === 1) {
@@ -295,6 +298,15 @@ function corepress_loginurl($url)
     return $url;
 }
 
+function corepress_registerurl($url)
+{
+    global $set;
+    if ($set['user']['regpage'] == 1) {
+        return $set['user']['regpageurl'];
+    }
+    return $url;
+}
+
 function corepress_addbutton()
 {
 //判断用户是否有编辑文章和页面的权限
@@ -333,6 +345,8 @@ add_action('edit_form_top', 'corepress_addbutton');
 add_filter('comment_text', 'corepress_comment_face');
 add_filter('comment_text_rss', 'corepress_comment_face');
 add_filter('login_url', 'corepress_loginurl', 1);
+add_filter('register_url', 'corepress_registerurl', 1);
+
 
 /** 编辑器取消屏蔽功能
  * @param $initArray
@@ -486,7 +500,7 @@ function corePress_lazyload($content)
 
     foreach ($images[0] as $item) {
         //跳过base64图片
-        if (preg_match('/src="data:(.*?)"/', $item)==1) {
+        if (preg_match('/src="data:(.*?)"/', $item) == 1) {
             continue;
         }
         preg_match('/class="(.*?)"/', $item, $class);
@@ -497,10 +511,10 @@ function corePress_lazyload($content)
         $content = str_replace($need_replace_str, $replace_str, $content);
 
         preg_match('/src="(.*?)"/', $replace_str, $class);
-        $need_replace_str ='src="'. $class[1].'"';
+        $need_replace_str = 'src="' . $class[1] . '"';
         $need_replace_str2 = $replace_str;
-        $replace_str = str_replace($need_replace_str, 'data-original="'. $class[1].'"'.'src="'.file_get_img_url('loading.png').'"', $replace_str);
-     
+        $replace_str = str_replace($need_replace_str, 'data-original="' . $class[1] . '"' . 'src="' . file_get_img_url('loading.png') . '"', $replace_str);
+
         $content = str_replace($need_replace_str2, $replace_str, $content);
     }
     return $content;
@@ -511,3 +525,6 @@ add_filter('the_content', 'corePress_lazyload');
 
 //禁止响应式图片
 add_filter('wp_calculate_image_srcset', create_function('', 'return false;'));
+add_filter('views_users', 'corepress_views_users');
+
+

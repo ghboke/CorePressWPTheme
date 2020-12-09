@@ -16,7 +16,6 @@ global $set;
 file_load_css('login-plane.css');
 ?>
 <div id="app" class="login-background">
-    <?php echo get_bloginfo('siteurl') ?>
     <header>
         <div class="header-main-plane">
             <div class="header-main container">

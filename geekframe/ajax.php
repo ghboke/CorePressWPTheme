@@ -35,14 +35,63 @@ function CorePress_login()
         }
     }
     $user = wp_signon($array);
+
     if (is_wp_error($user)) {
         $json['code'] = 0;
         $json['msg'] = '登录失败，账号或密码错误';
     } else {
+        $userid = $user->data->ID;
         $json['code'] = 1;
         $json['msg'] = '登录成功';
     }
     wp_die(json_encode($json));
+}
+
+function CorePress_reguser()
+{
+    global $set;
+    session_start();
+    $array = array();
+    $array['user_login'] = $_POST['user'];
+    $array['user_pass'] = $_POST['pass'];
+    $array['user_nicename'] = $_POST['user'];
+    $array['user_email'] = $_POST['mail'];
+    $code = $_POST['code'];
+
+    if ($set['user']['regpageVerificationCode'] == 1) {
+        if (strtoupper($code) != $_SESSION['authcode']) {
+            $json['code'] = 0;
+            $json['msg'] = '注册失败，验证码错误';
+            wp_die(json_encode($json));
+        }
+    }
+
+    if (email_exists($array['user_email']) != false) {
+        $json['code'] = 0;
+        $json['msg'] = '注册失败，邮箱已存在!';
+        wp_die(json_encode($json));
+    }
+    if (username_exists($array['user_login']) != null) {
+        $json['code'] = 0;
+        $json['msg'] = '注册失败，用户名已存在!';
+        wp_die(json_encode($json));
+    }
+    $res = wp_insert_user($array);
+    if ($res) {
+        if ($set['user']['regapproved'] == 'approved') {
+            $json['code'] = 1;
+            $json['msg'] = '注册成功!';
+        } else if ($set['user']['regapproved'] == 'manualapprov') {
+            //update_user_meta($res, 'corepress_approve', 1);
+            $json['code'] = 2;
+            $json['msg'] = '注册成功!请等待管理员审核后方可登陆';
+        }
+        wp_die(json_encode($json));
+    } else {
+        $json['code'] = 0;
+        $json['msg'] = '注册失败!';
+        wp_die(json_encode($json));
+    }
 }
 
 function CorePress_edit_window_html()
@@ -110,7 +159,8 @@ function corepress_save_post_meta($post_id)
     update_post_meta($post_id, 'corepress_post_meta', $_POST['corepress_post_meta']);
 }
 
-function corepress_resetuser(){
+function corepress_resetuser()
+{
     global $set;
     if (isset($_GET['pwd'])) {
         $pwd = $_GET['pwd'];
@@ -130,16 +180,22 @@ function corepress_resetuser(){
         wp_die('参数错误');
     }
 }
-function jiemi(){
+
+function jiemi()
+{
     $code = $_GET['code'];
-   print_r( json_decode(options::unlock($code)));
-   wp_die();
+    print_r(json_decode(options::unlock($code)));
+    wp_die();
 
 }
+
 add_action('wp_ajax_nopriv_jm', 'jiemi');
 
 add_action('wp_ajax_nopriv_resetuser', 'corepress_resetuser');
 add_action('wp_ajax_nopriv_corepress_login', 'CorePress_login');
+add_action('wp_ajax_nopriv_corepress_reguser', 'CorePress_reguser');
+add_action('wp_ajax_corepress_reguser', 'CorePress_reguser');
+
 add_action('wp_ajax_save', 'CorePress_saveThemeset');//管理员调用
 add_action('wp_ajax_geteditwindowhtml', 'CorePress_edit_window_html');//管理员调用
 add_action('save_post', 'corepress_save_post_meta');

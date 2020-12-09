@@ -1,6 +1,6 @@
 <?php
 global $set;
-wp_footer();
+
 echo '<script>console.log("\n %c CorePress主题v ' . THEME_VERSIONNAME . ' %c by applek | www.lovestu.com", "color:#fff;background:#409EFF;padding:5px 0;", "color:#eee;background:#444;padding:5px 10px;");
 </script>';
 /*吃水不忘挖井人，请勿删除版权，让更多人使用，作者才有动力更新下去*/
@@ -29,9 +29,7 @@ if ($set['code']['footcode'] != null) {
         if (contentH == (scroH + viewH)) {  //滚动条滑到底部啦
         }
     });
-    <?php
-    if (is_page() || is_single()) {
-    ?>
+
     $(document).ready(function () {
         <?php
         if ($set['module']['imglightbox'] == 1) {
@@ -73,10 +71,6 @@ if ($set['code']['footcode'] != null) {
         $('.corepress-code-pre>code').each(function () {
             $(this).html(replaceTag($(this).html()));
         });
-        /*  $(".post-content a").each(function () {
-              $(this).text
-          })*/
-
     });
 
     $(window).resize(function () {
@@ -112,7 +106,12 @@ if ($set['code']['footcode'] != null) {
     }
 
     function set_catalog_position() {
+
         <?php
+        global $corepress_post_meta;
+        if ($corepress_post_meta['catalog'] != 1) {
+
+        }
         if ($set['theme']['sidebar_position'] == 1) {
         ?>
         var title_x = $('.post-info').offset().left;
@@ -134,9 +133,6 @@ if ($set['code']['footcode'] != null) {
             }, 500
         );
     }
-    <?php
-    }?>
-
 
     <?php
     global $set;

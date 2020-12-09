@@ -91,7 +91,94 @@
         </el-switch>
     </div>
 </div>
+<h3>自定义注册</h3>
 
+<div class="set-plane">
+    <div class="set-title">
+        开启自定义注册页面
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.user.regpage"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+<?php
+if (!get_option('users_can_register')) {
+    ?>
+    <div class="set-plane set-plane-note">
+        <div class="set-title"></div>
+        <div class="set-object">
+            当前系统未开启注册功能，请前往设置->设置允许任何注册以后，本项目设置才会生效
+        </div>
+    </div>
+    <?php
+}
+
+?>
+
+<div class="set-plane">
+    <div class="set-title">
+        自定义注册页面地址
+    </div>
+    <div class="set-object">
+        <el-input placeholder="" v-model="set.user.regpageurl" size="small">
+        </el-input>
+    </div>
+</div>
+<div class="set-plane set-plane-note">
+    <div class="set-title"></div>
+    <div class="set-object">
+        请在页面->创建页面->页面模板选择[CorrPress自定义注册页面]，填写页面地址
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+        注册页面验证码
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.user.regpageVerificationCode"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+
+
+<div class="set-plane">
+    <div class="set-title">
+        注册页面背景图片地址
+    </div>
+    <div class="set-object">
+        <el-input placeholder="" v-model="set.user.regpageimg" size="small">
+            <el-button size="mini" slot="append" icon="el-icon-picture"
+                       @click="selectImg('set.user.regpageimg')">上传
+            </el-button>
+        </el-input>
+    </div>
+</div>
+
+<div class="set-plane">
+    <div class="set-title">
+        注册审核
+    </div>
+    <div class="set-object">
+        <el-radio v-model="set.user.regapproved" label="approved">默认通过审核</el-radio>
+        <el-radio v-model="set.user.regapproved" label="manualapprov">后台手动审核</el-radio>
+    </div>
+</div>
+
+<div class="set-plane set-plane-note">
+    <div class="set-title"></div>
+    <div class="set-object">
+        建议开启审核功能，后台审核通过的用户方可正常登陆，其他审核方式更新中
+    </div>
+</div>
 
 <?php
 
