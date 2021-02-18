@@ -4,7 +4,6 @@
     <?php get_header(); ?>
 </head>
 <body>
-
 <div id="app">
     <header>
         <div class="header-main-plane">
@@ -15,7 +14,7 @@
             </div>
         </div>
     </header>
-    <div style="min-height: 80px;width: 100%;"></div>
+    <div class="top-divider"></div>
     <main class="container">
         <div class="html-main">
             <?php
@@ -51,12 +50,14 @@
             ?>
             <div class="frinds-links">
                 <div class="list-plane-title">
-                    <p>友情链接</p>
+                    <div>友情链接 <span
+                                class="list-plane-linksdescribe"><?php echo $set['index']['linksdescribe']; ?></span>
+                    </div>
                     <?php
                     if ($set['index']['applylink'] != null) {
                         ?>
                         <a href="<?php echo $set['index']['applylink'] ?>" class="frinds-links-apply">申请友链</a>
-                        <?
+                        <?php
                     }
                     ?>
                 </div>
@@ -64,7 +65,7 @@
                     <?php wp_list_bookmarks('title_li=&categorize=0'); ?>
                 </div>
             </div>
-            <?
+            <?php
         }
         ?>
     </main>

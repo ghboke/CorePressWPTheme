@@ -15,7 +15,7 @@
             </div>
         </div>
     </header>
-    <div style="min-height: 80px;width: 100%;"></div>
+    <div class="top-divider"></div>
     <main class="container">
         <div class="html-main">
             <?php

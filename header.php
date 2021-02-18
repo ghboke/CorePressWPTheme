@@ -12,6 +12,19 @@ if ($set['code']['headcode'] != null) {
 if ($set['code']['css'] != null) {
     echo "<style>" . base64_decode($set['code']['css']) . "</style>";
 }
+if ($set['code']['alifront'] != null) {
+    echo '<style>.icon {width: 18px; height: 18px;vertical-align: -3px;fill: currentColor;overflow: hidden;}</style>';
+}
+if ($set['theme']['bagimg'] != null) {
+    if (!is_page_template('page-login.php') && !is_page_template('page-reg.php')) {
+        if ($set['theme']['bagimg_showtype'] == 1) {
+            echo "<style>html, body, #app {background-image: url('{$set['theme']['bagimg']}')!important;background-position: center center;background-attachment: fixed;background-size: cover;}</style>";
+        } else {
+            echo "<style>html, body, #app {background-image: url('{$set['theme']['bagimg']}')!important;background-position: center center;background-attachment: fixed;}</style>";
+        }
+    }
+}
+
 
 if ($set['routine']['favicon'] != null) {
     ?>
@@ -29,12 +42,12 @@ if ($set['routine']['favicon'] != null) {
 <?php
 
 
-wp_head();
+
 file_load_css('main-mobile.css');
 file_load_css('main.css');
 file_load_lib('fontawesome5/css/all.min.css', 'css');
 file_load_js('jquery.min.js');
-
+wp_head();
 if ($set['module']['imglazyload'] == 1) {
     file_load_js('jquery.lazyload.min.js');
 }
@@ -69,7 +82,7 @@ if (is_home()) {
     if ($set['post']['imgshadow'] == 1) {
         ?>
         <style>
-            .post-content-post img {
+            post-content-content img {
                 box-shadow: 0 0 5px 0 rgba(0, 0, 0, .1);
             }
         </style>
@@ -106,7 +119,7 @@ if (is_home()) {
         $title = get_the_title();
     }
 
-} elseif (is_category()||is_tag()) {
+} elseif (is_category() || is_tag()) {
     $delimiter = $set['seo']['title_delimiter'];
     if ($set['seo']['openseo'] == 1) {
         if ($set['seo']['titlestyle'] == 'site_title') {
@@ -119,9 +132,20 @@ if (is_home()) {
     } else {
         $title = single_cat_title('', false);
     }
-
-}  else {
-
+} elseif (is_author()) {
+    $delimiter = $set['seo']['title_delimiter'];
+    if ($set['seo']['openseo'] == 1) {
+        if ($set['seo']['titlestyle'] == 'site_title') {
+            $title = get_bloginfo('name') . $delimiter . get_the_author() . '的文章';
+        } elseif ($set['seo']['titlestyle'] == 'title_site') {
+            $title = get_the_author() . '的文章' . $delimiter . get_bloginfo('name');
+        } else {
+            $title = get_the_author() . '的文章';
+        }
+    } else {
+        $title = get_the_author() . '的文章';
+    }
+} else {
     if ($set['seo']['openseo'] == 1) {
         $delimiter = $set['seo']['title_delimiter'];
         $title = wp_title($delimiter, false, 'right');
@@ -129,6 +153,8 @@ if (is_home()) {
         $title = wp_title('&raquo;', false, 'right');
     }
 }
+
+
 echo "<title>{$title}</title>";
 $keywords = '';
 $description = '';
@@ -147,6 +173,19 @@ if (is_home()) {
     global $post;
     global $corepress_post_meta;
     $corepress_post_meta = json_decode(get_post_meta($post->ID, 'corepress_post_meta', true), true);
+    if (empty($corepress_post_meta['seo']['open'])) {
+        $corepress_post_meta['seo']['open'] = 0;
+    }
+    if (empty($corepress_post_meta['closesidebar'])) {
+        $corepress_post_meta['closesidebar'] = 0;
+    }
+    if (empty($corepress_post_meta['postrighttag']['open'])) {
+        $corepress_post_meta['postrighttag']['open'] = 0;
+    }
+    if (empty($corepress_post_meta['catalog'])) {
+        $corepress_post_meta['catalog'] = 0;
+    }
+
     if ($corepress_post_meta['seo']['open'] == 1) {
         $description = $corepress_post_meta['seo']['description'];
         $keywords = $corepress_post_meta['seo']['keywords'];
@@ -158,10 +197,12 @@ if (is_home()) {
         }
         $keywords = rtrim($keywords, ', ');
     }
-
 } elseif (is_tag()) {
     // 标签的description可以到后台 - 文章 - 标签，修改标签的描述
     $description = tag_description();
+    $keywords = single_tag_title('', false);
+} elseif (is_category()) {
+    $description = category_description();
     $keywords = single_tag_title('', false);
 }
 $description = trim(strip_tags($description));
@@ -174,6 +215,8 @@ if ($set['seo']['openseo'] == 1) {
         <?php
     }
 }
+
+
 ?>
 
 

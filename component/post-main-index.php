@@ -1,5 +1,9 @@
 <?php
-if (is_home()) {
+global $paged;
+if (!$paged) {
+    $paged = 1;
+}
+if (is_home() && $paged == 1) {
     global $set;
     if ($set['index']['swiperlist'] != null || count($set['index']['swiperlist']) > 0) {
         ?>
@@ -9,7 +13,6 @@ if (is_home()) {
                 <div class="swiper-container carousel">
                     <div class="swiper-wrapper">
                         <?php
-                        //print_r($set['index']['swiperlist']);
                         foreach ($set['index']['swiperlist'] as $item) {
                             $target = '_blank';
                             if ($item['url'] == null) {
@@ -27,8 +30,8 @@ if (is_home()) {
                         ?>
                     </div>
                     <div class="swiper-pagination"></div>
-                    <div class="corepress-swiper-button-next corepress-swiper-button"><i class="fas fa-chevron-right"></i></div>
-                    <div class="corepress-swiper-button-prev corepress-swiper-button"><i class="fas fa-chevron-left"></i></div>
+                    <div class="corepress-swiper-button-next corepress-swiper-button"><i class="fal fa-chevron-right"></i></div>
+                    <div class="corepress-swiper-button-prev corepress-swiper-button"><i class="fal fa-chevron-left"></i></div>
                 </div>
             </div>
         <?php } ?>
@@ -51,15 +54,54 @@ if (is_home()) {
         </script>
         <?php
     }
+    if ($set['index']['postcard'] != null || count($set['index']['postcard']) > 0) {
+        $item_percent = 100 / $set['index']['postcardlinenumber'] - 1;
+        ?>
+        <style>
+            .index-top-postcard-item {
+                flex-basis: <?php echo $item_percent.'%';?>;
+            }
+        </style>
+        <div class="index-top-postcard-plane">
+            <div class="index-top-postcard-body">
+                <?php
+                foreach ($set['index']['postcard'] as $item) {
+                    ?>
+                    <div class="index-top-postcard-item">
+                        <div class="index-top-postcard-main">
+                            <div class="post-item-thumbnail">
+                                <a href="<?php echo $item['url'] ?>"><img src="<?php echo $item['imgurl'] ?>"
+                                                                          alt=""></a>
+                            </div>
+                            <?php if ($item['url'] != null) {
+                                ?>
+                                <div class="index-top-postcard-title">
+                                    <a href="<?php echo $item['url'] ?>"><?php echo $item['title'] ?></a>
+                                </div>
+                                <?php
+                            } ?>
+                        </div>
+
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+        <?php
+    }
+
 }
 ?>
 <div class="post-list-page-plane">
     <div class="list-plane-title">
         <?php
         if (is_category()) {
-            echo ' <p>'.single_cat_title('', false).'</p>';
+            echo ' <p>' . single_cat_title('', false) . '</p>';
         } elseif (is_home()) {
             echo ' <p>最新文章</p>';
+        } elseif (is_author()) {
+            echo '<p>' . get_the_author() . ' 的文章</p>';
         } else {
             echo ' <p>最新文章</p>';
         }

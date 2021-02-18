@@ -242,6 +242,39 @@
     </div>
 </div>
 
+<div class="set-plane">
+    <div class="set-title">
+        关闭修改密码和邮箱邮件通知
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.optimization.notification_changepwdandmail_email"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+        关闭网站用户注册邮件通知
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.optimization.notification_reg_email"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+    </div>
+    <div class="set-object">
+        WordPress在用户修改密码和邮箱，用户注册会发送邮件给站长邮箱，建议关闭
+    </div>
+</div>
 <h3>评论优化</h3>
 
 <div class="set-plane">

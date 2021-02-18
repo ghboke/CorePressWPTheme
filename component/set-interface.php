@@ -70,4 +70,72 @@
         </div>
     </div>
 </div>
+<h3>背景图片设置</h3>
+<div class="set-plane">
+    <div class="set-title">
+        背景图片
+    </div>
+    <div class="set-object">
+        <el-input placeholder="" v-model="set.theme.bagimg" size="small">
+            <el-button size="mini" slot="append" icon="el-icon-picture"
+                       @click="selectImg('set.theme.bagimg')">上传
+            </el-button>
+        </el-input>
+    </div>
+</div>
+
+
+<div class="set-plane">
+    <div class="set-title">
+        背景图片显示方式
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.theme.bagimg_showtype"
+                :active-value="1"
+                :inactive-value="0"
+                active-text="全屏"
+                inactive-text="平铺"
+        >
+        </el-switch>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+    </div>
+    <div class="set-object">
+        建议选择小图片，加载比较迅速，推荐背景图片下载网站：<a href="https://www.toptal.com/designers/subtlepatterns/" target="_blank">点击进入</a>
+    </div>
+</div>
+
+
+<h3>首页文章列表外观</h3>
+<div class="set-plane">
+    <div class="set-title">
+        最新发布文章图标提示
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.theme.postlist_newnote"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+<h3>文章页面内容外观</h3>
+
+<div class="set-plane">
+    <div class="set-title">
+        底部显示上一篇下一篇面板
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.theme.postcontent.turn_page_plane"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
 

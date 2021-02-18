@@ -1,8 +1,8 @@
 <?php
 define('THEME_NAME', 'CorePress');
-define('THEME_VERSION', 15);
+define('THEME_VERSION', 27);
 define('THEME_DOWNURL', 'https://www.lovestu.com');
-define('THEME_VERSIONNAME', '2.4');
+define('THEME_VERSIONNAME', '3.6');
 define('THEME_PATH', get_template_directory());
 define('THEME_STATIC_PATH', get_template_directory_uri() . '/static');
 define('THEME_CSS_PATH', THEME_STATIC_PATH . '/css');
@@ -18,7 +18,11 @@ require_once(FRAMEWORK_PATH . '/utils.php');
 require_once(FRAMEWORK_PATH . '/support.php');
 require_once(FRAMEWORK_PATH . '/users.php');
 require_once(FRAMEWORK_PATH . '/ajax.php');
-require_once(FRAMEWORK_PATH . '/shortcode.php');
+
 require_once(FRAMEWORK_PATH . '/comment-pro.php');
 require_once(THEME_PATH . '/widgets/comments.php');
+require_once(THEME_PATH . '/widgets/author.php');
+
+require_once(FRAMEWORK_PATH . '/shortcode.php');
 add_editor_style('static/css/editor-style.css');
+error_reporting(0);

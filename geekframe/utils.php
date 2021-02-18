@@ -13,14 +13,23 @@ function file_load_img($path)
 {
     echo "<img src=\"" . THEME_IMG_PATH . "/{$path}\">";
 }
+
 function file_get_img_url($path)
 {
-    return  THEME_IMG_PATH . "/".$path;
+    return THEME_IMG_PATH . "/" . $path;
 }
+
+function file_echo_svg($path)
+{
+    $size = readfile(THEME_PATH . '/static/img/' . $path);
+    //echo file_get_contents(THEME_IMG_PATH . "/" . $path);
+}
+
 function file_load_face()
 {
 
     $files = scandir(THEME_PATH . "/static/img/face");
+    $html = null;
     foreach ($files as $v) {
         /* if(is_file($v)){
              $fileItem[] = $v;
@@ -62,7 +71,7 @@ function loginAndBack($url = null)
 {
     if ($url == null) {
         return wp_login_url('//' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-    }else{
+    } else {
         return wp_login_url($url);
 
     }
@@ -73,10 +82,10 @@ function corepress_get_user_nickname($user_id = null)
 {
     if ($user_id == null) {
         $currentUser = wp_get_current_user();
-        $name = $currentUser->user_nicename;
+        $name = $currentUser->display_name;
     } else {
         $user = get_userdata($user_id);
-        $name = $user->user_nicename;
+        $name = $user->display_name;
     }
     return $name;
 }
@@ -204,7 +213,9 @@ function get_share_url($type, $title, $summary)
         return 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' . $url . '&title=' . urlencode($title) . '&pics=&summary=' . urlencode($summary);
     }
 }
-function corepress_replace_copyright($str){
+
+function corepress_replace_copyright($str)
+{
     global $post;
     $author_name = get_the_author();
     $post_url = get_permalink();
@@ -213,4 +224,113 @@ function corepress_replace_copyright($str){
     $str = str_replace('<#url#>', $post_url, $str);
 
     return $str;
+}
+
+function corepress_jmp_message($message, $jumpUrl)
+{
+    global $set;
+    ?>
+    <!doctype html>
+    <html lang="zh">
+    <head>
+        <?php get_header(); ?>
+    </head>
+    <body>
+    <?php
+    file_load_css('login-plane.css');
+    ?>
+    <div id="app" class="login-background">
+        <header>
+            <div class="header-main-plane">
+                <div class="header-main container">
+                    <?php
+                    get_template_part('component/nav-header');
+                    ?>
+                </div>
+            </div>
+        </header>
+        <div class="header-zhanwei" style="min-height: 80px;width: 100%;"></div>
+        <main class="container">
+            <div class="html-main"
+                 style="background: #fff;padding: 20px;height: 100%;margin-bottom: 20px;font-size: 20px">
+                <div>
+                    <?php echo $message ?>
+                    <div><a href="<?php echo $jumpUrl ?>">点击这儿</a>直接跳转</div>
+                </div>
+            </div>
+        </main>
+        <script>
+            setTimeout(function () {
+                location.replace('<?php echo $jumpUrl?>')
+            }, 3000)</script>
+        <footer>
+            <?php
+            wp_footer();
+            get_footer(); ?>
+        </footer>
+    </div>
+    </body>
+    </html>
+    <?php
+}
+
+function curPageURL()
+{
+    $pageURL = 'http';
+
+    if ($_SERVER["HTTPS"] == "on") {
+        $pageURL .= "s";
+    }
+    $pageURL .= "://";
+
+    $this_page = $_SERVER["REQUEST_URI"];
+
+    // 只取 ? 前面的内容
+    if (strpos($this_page, "?") !== false) {
+        $this_pages = explode("?", $this_page);
+        $this_page = reset($this_pages);
+    }
+
+    if ($_SERVER["SERVER_PORT"] != "80") {
+        $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $this_page;
+    } else {
+        $pageURL .= $_SERVER["SERVER_NAME"] . $this_page;
+    }
+    return $pageURL;
+}
+
+/**
+ *参数验证
+ */
+function parameter_verification($arr, $type = 0)
+{
+    $re_arry = array();
+    foreach ($arr as $item) {
+        if ($type == 1) {
+            if (!isset($_POST[$item])) {
+                $json['code'] = 0;
+                $json['msg'] = '参数错误';
+                wp_die(json_encode($json));
+            } else {
+                $re_arry[$item] = $_POST[$item];
+            }
+        } else {
+            if (!isset($_GET[$item])) {
+                $json['code'] = 0;
+                $json['msg'] = '参数错误';
+                wp_die(json_encode($json));
+            } else {
+                $re_arry[$item] = $_GET[$item];
+            }
+        }
+
+    }
+    return $re_arry;
+}
+
+function ajax_die($msg, $code = 0)
+{
+    $json['code'] = $code;
+    $json['msg'] = $msg;
+    wp_die(json_encode($json));
 }

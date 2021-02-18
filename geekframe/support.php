@@ -37,7 +37,14 @@ function geekpress_sidebar_reg()
     ));
     register_sidebar(array(
         'id' => 'footer_widget',
-        'name' => '底部小工具1',
+        'name' => '底部小工具[左侧]',
+        'before_title' => '<h2 class="footer-widget-title">',
+        'before_widget' => '<div class="footer-aside-box">',
+        'after_widget' => '</div>'
+    ));
+    register_sidebar(array(
+        'id' => 'footer_widget_right',
+        'name' => '底部小工具[右侧]',
         'before_title' => '<h2 class="footer-widget-title">',
         'before_widget' => '<div class="footer-aside-box">',
         'after_widget' => '</div>'
@@ -83,10 +90,33 @@ function geekpress_page_setting()
 
 add_action('wp_enqueue_scripts', 'corePress_get_dashicons');*/
 
-//禁止转义引号字符
-remove_filter('the_content', 'wptexturize'); // 禁止英文引号转义为中文引号
-remove_filter('the_content', 'balanceTags'); //禁止对标签自动校正
+// 禁止英文引号转义为中文引号
+remove_filter('the_content', 'wptexturize');
+//禁止对标签自动校正
+remove_filter('the_content', 'balanceTags');
 
+
+if ($set['optimization']['notification_reg_email'] === 1) {
+//关闭新用户注册用户邮件通知
+    add_filter('wp_new_user_notification_email', '__return_false');
+}
+if ($set['optimization']['notification_changepwdandmail_email'] === 1) {
+    //屏蔽密码修改通知邮件
+    add_filter('send_password_change_email', '__return_false');
+    //屏蔽邮箱修改通知邮件
+    add_filter('email_change_email', '__return_false');
+//关闭新用户注册通知站长的邮件
+    add_filter('wp_new_user_notification_email_admin', '__return_false');
+    //关闭更新邮箱用户邮件通知
+}
+
+
+function ban_scripts()
+{
+    wp_deregister_script('jquery');
+}
+
+add_action('wp_enqueue_scripts', 'ban_scripts', 1);
 
 if ($set['optimization']['removeversion'] === 1) {
     add_filter('script_loader_src', 'mimvp_remove_wp_version_strings');
@@ -136,7 +166,7 @@ if ($set['optimization']['closegutenberg'] === 1) {
     add_filter('use_block_editor_for_post', '__return_false');
 
 }
-
+add_filter('wp_dashboard_setup', '__return_false');//屏蔽PHP检查
 function fanly_remove_block_library_css()
 {
     wp_dequeue_style('wp-block-library');
@@ -152,7 +182,30 @@ if ($set['optimization']['closeupdate'] === 1) {
     /*    remove_action('admin_init', '_maybe_update_core');
         remove_action('admin_init', '_maybe_update_plugins');
         remove_action('admin_init', '_maybe_update_themes');*/
-
+// 彻底关闭自动更新
+    add_filter('automatic_updater_disabled', '__return_true');
+// 关闭更新检查定时作业
+    remove_action('init', 'wp_schedule_update_checks');
+// 移除已有的版本检查定时作业
+    wp_clear_scheduled_hook('wp_version_check');
+// 移除已有的插件更新定时作业
+    wp_clear_scheduled_hook('wp_update_plugins');
+// 移除已有的主题更新定时作业
+    wp_clear_scheduled_hook('wp_update_themes');
+// 移除已有的自动更新定时作业
+    wp_clear_scheduled_hook('wp_maybe_auto_update');
+// 移除后台内核更新检查
+    remove_action('admin_init', '_maybe_update_core');
+// 移除后台插件更新检查
+    remove_action('load-plugins.php', 'wp_update_plugins');
+    remove_action('load-update.php', 'wp_update_plugins');
+    remove_action('load-update-core.php', 'wp_update_plugins');
+    remove_action('admin_init', '_maybe_update_plugins');
+    // 移除后台主题更新检查
+    remove_action('load-themes.php', 'wp_update_themes');
+    remove_action('load-update.php', 'wp_update_themes');
+    remove_action('load-update-core.php', 'wp_update_themes');
+    remove_action('admin_init', '_maybe_update_themes');
 }
 if ($set['optimization']['banimgresolving'] === 1) {
     // 禁止大图片压缩
@@ -214,6 +267,7 @@ show_admin_bar(false);
 function copay_footer_admin($text)
 {
     global $set;
+    $url = null;
     if ($set['info']['themeupdate'] == 1) {
         corepress_updateTheme();
         if ($set['info']['newversion'] != THEME_VERSION) {
@@ -254,7 +308,7 @@ function corepress_updateTheme()
         update_option('corepress_updatetheme', time());
     }
     if (time() - $lasttime > 60 * 60) {
-        $url = 'http://theme.lovestu.com/version.php?site=' . get_bloginfo('siteurl') . '&n=1&v=' . THEME_VERSION;
+        $url = 'http://theme.lovestu.com/version.php?site=' . get_bloginfo('siteurl', 'display') . '&n=1&v=' . THEME_VERSION;
         $request = new WP_Http;
         $result = $request->request($url);
         if (!is_wp_error($result)) {
@@ -290,9 +344,13 @@ function corepress_comment_face($incoming_comment)
 function corepress_loginurl($url)
 {
     global $set;
-    $query = parse_url($url);
-    parse_str($query['query'], $output);
+
     if ($set['user']['loginpage'] == 1) {
+        $query = parse_url($url);
+        if (!isset($query['query'])) {
+            return $url;
+        }
+        parse_str($query['query'], $output);
         return $set['user']['lgoinpageurl'] . '?re=' . $output['redirect_to'];
     }
     return $url;
@@ -303,6 +361,15 @@ function corepress_registerurl($url)
     global $set;
     if ($set['user']['regpage'] == 1) {
         return $set['user']['regpageurl'];
+    }
+    return $url;
+}
+
+function corepress_lostpassword_url($url)
+{
+    global $set;
+    if ($set['user']['repassword'] == 1) {
+        return $set['user']['repasswordurl'];
     }
     return $url;
 }
@@ -324,6 +391,30 @@ function corepress_addbutton()
         file_load_js('tools.js');
         file_load_css('editor-window.css');
         file_load_lib('layer/layer.js', 'js');
+        ?>
+        <script>
+            $(document).ready(function () {
+                layer.config({
+                    extend: 'corepress/style.css?v=2.7', //加载您的扩展样式,它自动从theme目录下加载这个文件
+                    skin: 'corepress-layer'
+                });
+                $('.corepress-btn').click(() => {
+                    $('.corepress-btn').text('加载中，请稍后');
+                    $.get('<?php echo admin_url('admin-ajax.php');?>', {action: 'geteditwindowhtml'}, function (str) {
+                        $('.corepress-btn').text('CorePress编辑器增强');
+                        layer.open({
+                            type: 1,
+                            title: '插入短代码',
+                            shadeClose: true,
+                            shade: false,
+                            area: ['300px', '450px'],
+                            content: str
+                        });
+                    });
+                })
+            })
+        </script>
+        <?php
         file_load_js('editor-functions.js');
         add_filter('mce_external_plugins', 'corepress_add_editor_plugin');
     }
@@ -346,6 +437,7 @@ add_filter('comment_text', 'corepress_comment_face');
 add_filter('comment_text_rss', 'corepress_comment_face');
 add_filter('login_url', 'corepress_loginurl', 1);
 add_filter('register_url', 'corepress_registerurl', 1);
+add_filter('lostpassword_url', 'corepress_lostpassword_url', 1);
 
 
 /** 编辑器取消屏蔽功能
@@ -368,16 +460,30 @@ function corepress_add_meta_box()
 
 function corepress_meta_box_form($post)
 {
+    global $set;
     // 创建临时隐藏表单，为了安全
     wp_nonce_field('corepress_meta_box', 'corepress_meta_box_nonce');
     // 获取之前存储的值
     $corepress_post_meta['set'] = json_decode(get_post_meta($post->ID, 'corepress_post_meta', true), true);
 
     if (!isset($corepress_post_meta['set']['catalog'])) {
-        $corepress_post_meta['set']['catalog'] = 0;
+        if ($set['post']['defaultcatalog'] == 1) {
+            $corepress_post_meta['set']['catalog'] = 1;
+        } else {
+            $corepress_post_meta['set']['catalog'] = 0;
+        }
     }
     if (!isset($corepress_post_meta['set']['seo']['open'])) {
         $corepress_post_meta['set']['seo']['open'] = 0;
+    }
+    if (!isset($corepress_post_meta['set']['postrighttag']['open'])) {
+        $corepress_post_meta['set']['postrighttag']['open'] = 0;
+    }
+    if (!isset($corepress_post_meta['set']['postrighttag']['color'])) {
+        $corepress_post_meta['set']['postrighttag']['color'] = '#409EFF';
+    }
+    if (!isset($corepress_post_meta['set']['postrighttag']['text'])) {
+        $corepress_post_meta['set']['seo']['text'] = '';
     }
     if (!isset($corepress_post_meta['set']['seo']['keywords'])) {
         $corepress_post_meta['set']['seo']['keywords'] = '';
@@ -388,9 +494,11 @@ function corepress_meta_box_form($post)
     if (!isset($corepress_post_meta['set']['postshow'])) {
         $corepress_post_meta['set']['postshow'] = '0';
     }
+
     ?>
     <div id="corepress-post-meta">
         <input type="hidden" name="corepress_post_meta" :value="JSON.stringify(set)">
+
         <div class="set-plane">
             <div class="set-title">
                 开启文章目录
@@ -404,6 +512,61 @@ function corepress_meta_box_form($post)
                 </el-switch>
             </div>
         </div>
+
+        <div class="set-plane">
+            <div class="set-title">
+                不显示侧边栏
+            </div>
+            <div class="set-object">
+                <el-switch
+                        v-model="set.closesidebar"
+                        :active-value="1"
+                        :inactive-value="0"
+                >
+                </el-switch>
+            </div>
+        </div>
+        <h3>文章标签</h3>
+        <div class="set-plane">
+            <div class="set-title">
+                开启右上角标签显示
+            </div>
+            <div class="set-object">
+                <el-switch
+                        v-model="set.postrighttag.open"
+                        :active-value="1"
+                        :inactive-value="0"
+                >
+                </el-switch>
+            </div>
+        </div>
+        <div class="set-plane">
+            <div class="set-title">
+                标签文字
+            </div>
+            <div class="set-object">
+                <el-input placeholder="" v-model="set.postrighttag.text" size="small" maxlength="3" show-word-limit>
+                </el-input>
+            </div>
+        </div>
+
+        <div class="set-plane">
+            <div class="set-title">
+                背景颜色
+            </div>
+            <el-color-picker v-model="set.postrighttag.color"></el-color-picker>
+            <div style="max-width: 200px;margin-left: 10px;margin-right: 10px">
+                <el-input v-model="set.postrighttag.color" placeholder="" size="small"></el-input>
+            </div>
+            <div>
+                <el-button type="primary" size="small" @click="retagcolor('#409EFF')">恢复默认</el-button>
+                <el-button type="success" size="small" @click="retagcolor('#67C23A')">#67C23A</el-button>
+                <el-button type="info" size="small" @click="retagcolor('#909399')">#909399</el-button>
+                <el-button type="warning" size="small" @click="retagcolor('#F56C6C')">#F56C6C</el-button>
+                <el-button type="danger" size="small" @click="retagcolor('#E6A23C')">#E6A23C</el-button>
+            </div>
+        </div>
+
         <h3>SEO设置</h3>
         <div class="set-plane">
             <div class="set-title">
@@ -473,6 +636,11 @@ function corepress_meta_box_form($post)
                         }
                     ],
                     set
+                },
+                methods: {
+                    retagcolor(color) {
+                        this.set.postrighttag.color = color
+                    }
                 }
             })
         ;
@@ -524,7 +692,36 @@ function corePress_lazyload($content)
 add_filter('the_content', 'corePress_lazyload');
 
 //禁止响应式图片
-add_filter('wp_calculate_image_srcset', create_function('', 'return false;'));
+add_filter('wp_calculate_image_srcset', 'corepress_calculate_image_srcset');
+function corepress_calculate_image_srcset()
+{
+    return false;
+}
+
 add_filter('views_users', 'corepress_views_users');
+function corepress_get_comment_author_link($comment_ID = 0)
+{
+    $comment = get_comment($comment_ID);
+    $url = get_comment_author_url($comment);
+    $author = get_comment_author($comment);
+
+    if (empty($url) || 'http://' === $url) {
+        $return = $author;
+    } else {
+        $return = "<a href='$url' rel='external nofollow ugc' target='_blank' class='url'>$author</a>";
+    }
+    return $return;
+}
+
+add_filter('get_comment_author_link', 'corepress_get_comment_author_link');
+
+add_filter('gettext_with_context', 'disable_open_sans', 888, 4);
+function disable_open_sans($translations, $text, $context, $domain)
+{
+    if ('Open Sans font: on or off' == $context && 'on' == $text) {
+        $translations = 'off';
+    }
+    return $translations;
+}
 
 

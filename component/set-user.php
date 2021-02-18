@@ -1,7 +1,32 @@
+<h3>用户中心</h3>
+<div class="set-plane">
+    <div class="set-title">
+        开启用户中心
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.user.usercenter"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+        自定义用户中心页面地址
+    </div>
+    <div class="set-object">
+        <el-input placeholder="" v-model="set.user.usercenterurl" size="small">
+        </el-input>
+    </div>
+</div>
+
+
 <h3>自定义登录</h3>
 <div class="set-plane">
     <div class="set-title">
-        隐藏登录按钮
+        隐藏登录注册按钮
     </div>
     <div class="set-object">
         <el-switch
@@ -15,7 +40,7 @@
 <div class="set-plane set-plane-note">
     <div class="set-title"></div>
     <div class="set-object">
-        未登录用户不会显示登录按钮，登录后会显示用户菜单
+        未登录用户不会显示登录注册按钮，登录后会显示用户菜单
     </div>
 </div>
 <div class="set-plane">
@@ -170,15 +195,61 @@ if (!get_option('users_can_register')) {
     <div class="set-object">
         <el-radio v-model="set.user.regapproved" label="approved">默认通过审核</el-radio>
         <el-radio v-model="set.user.regapproved" label="manualapprov">后台手动审核</el-radio>
+        <el-radio v-model="set.user.regapproved" label="mailapproved">邮箱验证激活</el-radio>
+
     </div>
 </div>
 
 <div class="set-plane set-plane-note">
     <div class="set-title"></div>
     <div class="set-object">
-        建议开启审核功能，后台审核通过的用户方可正常登陆，其他审核方式更新中
+        建议开启审核功能，后台审核通过的用户方可正常登陆
+    </div>
+</div>
+<h3>自定义密码找回</h3>
+
+<div class="set-plane">
+    <div class="set-title">
+        开启自定义密码找回页面
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.user.repassword"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
     </div>
 </div>
 
-<?php
+<div class="set-plane set-plane-note">
+    <div class="set-title"></div>
+    <div class="set-object">
+        请在页面->创建页面->页面模板选择[CorrPress自定义密码找回页面]
+        <el-tag type="danger" size="mini">无法登录</el-tag>
+        ！
+    </div>
+</div>
 
+<div class="set-plane">
+    <div class="set-title">
+        自定义密码找回页面地址
+    </div>
+    <div class="set-object">
+        <el-input placeholder="" v-model="set.user.repasswordurl" size="small">
+        </el-input>
+    </div>
+</div>
+
+<div class="set-plane">
+    <div class="set-title">
+        自定义找回密码背景图片地址
+    </div>
+    <div class="set-object">
+        <el-input placeholder="" v-model="set.user.repasswordimg" size="small">
+            <el-button size="mini" slot="append" icon="el-icon-picture"
+                       @click="selectImg('set.user.repasswordimg')">上传
+            </el-button>
+        </el-input>
+    </div>
+</div>

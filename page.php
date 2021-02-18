@@ -16,36 +16,51 @@ the_post();
                 ?>
             </div>
         </header>
-        <div style="min-height: 80px;width: 100%;"></div>
+        <div class="top-divider"></div>
         <main class="container">
             <div class="html-main">
                 <?php
                 global $set;
-                if ($set['theme']['sidebar_position'] == 1) {
+                global $corepress_post_meta;
+                if ($corepress_post_meta['closesidebar'] == 1) {
                     ?>
-                    <div class="post-main">
-                        <?php get_template_part('component/post-content'); ?>
-                    </div>
-                    <div class="sidebar">
-                        <div class="sidebar-box-list">
-                            <?php dynamic_sidebar('post_sidebar'); ?>
-                        </div>
+                    <style>
+                        body .post-info-right {
+                            display: none;
+                        }
+                    </style>
+                    <div class="post-main post-main-closesidebar" style="flex-basis: 100%;">
+                        <?php
+                        get_template_part('component/post-page');
+                        ?>
                     </div>
                     <?php
                 } else {
-                    ?>
-                    <div class="sidebar">
-                        <div class="sidebar-box-list">
-                            <?php dynamic_sidebar('post_sidebar'); ?>
+                    if ($set['theme']['sidebar_position'] == 1) {
+                        ?>
+                        <div class="post-main">
+                            <?php get_template_part('component/post-page'); ?>
                         </div>
-                    </div>
-                    <div class="post-main">
-                        <?php get_template_part('component/post-content'); ?>
-                    </div>
-                    <?php
+                        <div class="sidebar">
+                            <div class="sidebar-box-list">
+                                <?php dynamic_sidebar('post_sidebar'); ?>
+                            </div>
+                        </div>
+                        <?php
+                    } else {
+                        ?>
+                        <div class="sidebar">
+                            <div class="sidebar-box-list">
+                                <?php dynamic_sidebar('post_sidebar'); ?>
+                            </div>
+                        </div>
+                        <div class="post-main">
+                            <?php get_template_part('component/post-page'); ?>
+                        </div>
+                        <?php
+                    }
                 }
                 ?>
-
             </div>
         </main>
         <footer>

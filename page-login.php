@@ -1,7 +1,7 @@
 <?php
 // TEMPLATE NAME: CorrPress自定义登录页面
 if (islogin()) {
-    header("Location: /");
+    header("Location: " . get_bloginfo('url'));
     exit();
 }
 global $set;
@@ -82,6 +82,16 @@ if ($set['user']['lgoinpageimg'] != null) {
             recodeimg();
         });
         $('#btn-login').click(() => {
+            login();
+        })
+        $('.input-code,.input-pass').bind('keypress', function (event) {
+            console.log(event.keyCode);
+            if (event.keyCode == "13") {
+                login();
+            }
+        });
+
+        function login() {
             var user = $('input[name="user"]').val();
             var pass = $('input[name="pass"]').val();
             var code = $('input[name="code"]').val();
@@ -111,7 +121,7 @@ if ($set['user']['lgoinpageimg'] != null) {
 
                 }
             })
-        })
+        }
 
         function recodeimg() {
             $('.img-code').attr('src', '<?php echo FRAMEWORK_URI . "/VerificationCode.php?t=" . time() ?>');

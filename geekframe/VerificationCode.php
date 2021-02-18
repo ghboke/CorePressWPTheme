@@ -22,8 +22,6 @@ for ($i = 0; $i < 4; $i++) {
     $captch_code .= $fontcontent;
 }
 $_SESSION['authcode'] = $captch_code;//将变量保存再session的authcode变量中
-
-
 //该循环,循环画背景干扰的点
 /*for($m=0;$m<=600;$m++){
 

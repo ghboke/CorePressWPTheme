@@ -101,9 +101,20 @@ add_filter('user_row_actions', 'corepress_user_row_action', 10, 2);
 add_action('user_register', 'corepress_user_register');
 function corepress_user_register($id)
 {
-    global $set;
+    global $set, $wpdb;
     if ($set['user']['regapproved'] == 'manualapprov') {
         update_user_meta($id, 'corepress_approve', 1);
+    }
+    $time = time();
+    $key = md5($time);
+    $wpdb->update($wpdb->users, array('user_activation_key' => $time . ':' . $key), array('ID' => $id));
+
+    if ($set['user']['regapproved'] == 'mailapproved') {
+        update_user_meta($id, 'corepress_approve', 1);
+        $headers = array('Content-Type: text/html; charset=UTF-8');
+        $userobj = get_user_by('ID', $id);
+        $mailre = wp_mail($userobj->user_email, get_option('blogname', '【CorePress】') . '激活用户验证', '您好，感谢注册本站用户，下面是您的激活链接，点击访问即可激活用户，激活以后可以正常登陆账号。【激活链接24小时内容有效】<br>' .
+            admin_url('admin-ajax.php') . '?action=corepress_approveuser&key=' . $key . '&id=' . $id, $headers);
     }
 }
 
@@ -111,6 +122,7 @@ add_action('wp_login', 'corepress_action_login', 10, 2);
 function corepress_action_login($user_login, $user)
 {
     global $set;
+
     if (get_user_meta($user->ID, 'corepress_approve', true) == 1) {
         $json['code'] = 0;
         $json['msg'] = '登录失败，账号未通过审核';
@@ -119,4 +131,116 @@ function corepress_action_login($user_login, $user)
     }
 }
 
+function corepress_mail_smtp($phpmailer)
+{
+    global $set;
+    $phpmailer->From = $set['module']['smtpuser']; //发件人邮箱
+    $phpmailer->FromName = $set['module']['smtpname']; //发件人昵称
+    $phpmailer->Host = $set['module']['smtphost']; //SMTP服务器地址
+    $phpmailer->Port = $set['module']['smtpport']; //SMTP端口，常用端口有25、465、587
+    $phpmailer->SMTPSecure = $set['module']['smtpencrypttype']; //SMTP加密方式，常用的有SSL/TLS
+    $phpmailer->Username = $set['module']['smtpuser']; //邮箱帐号
+    $phpmailer->Password = $set['module']['smtppwd']; //邮箱密码。如果上面是qq邮箱这里就是QQ邮箱授权码。
+    $phpmailer->IsSMTP(); //使用SMTP发送
+    $phpmailer->SMTPAuth = true; //启用SMTPAuth服务
+}
 
+global $set;
+if ($set['module']['smtp'] == 1) {
+    add_action('phpmailer_init', 'corepress_mail_smtp', 10);
+}
+
+function reset_user_password($userobj)
+{
+    global $set, $wpdb;
+    $time = time();
+    $key = md5($time);
+    $wpdb->update($wpdb->users, array('user_activation_key' => $time . ':' . $key), array('ID' => $userobj->ID));
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+    $mailre = wp_mail($userobj->user_email, get_option('blogname', '【CorePress】') . '重置密码验证', '您好，您在本网站进行重置密码操作，请点击如下链接进入重置密码页面。【本链接24小时内容有效，如果不是您的操作，请忽略】<br>' .
+        '<a target="_blank" href="' . $set['user']['repasswordurl'] . '?action=resetpwd&key=' . $key . '&id=' . $userobj->ID . '">' . $set['user']['repasswordurl'] . '?action=resetpwd&key=' . $key . '&id=' . $userobj->ID . '</a>', $headers);
+    return $mailre;
+}
+
+function showlostpasshtml($type, $msg)
+{
+
+    if ($type == 1) {
+        ?>
+        <div id="login-plane">
+            <div class="login-main" style="width: 100%;">
+                <div id="login-note">
+                    提示
+                </div>
+                <div class="login-form">
+                    <div class="login-title"><h3>重置密码</h3></div>
+                    <i class="fas fa-key ico-login" aria-hidden="true"></i>
+                    <input class="input-login input-pass"
+                           name="pwd"
+                           type="password"
+                           placeholder="请输入新密码">
+                    <div>
+                        <i class="fas fa-key ico-login" aria-hidden="true"></i>
+                        <input class="input-login input-pass"
+                               name="repwd"
+                               type="password"
+                               placeholder="重复密码">
+
+                        <button class="login-button" id="btn-resetpwd">重置密码</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    } else {
+        ?>
+        <div id="login-plane">
+            <div class="login-main" style="width: 100%;">
+                <div class="login-form">
+                    <div class="login-title">
+                        <div>
+                            <h3>验证提示</h3>
+                            <div>
+                                <br><br>
+                                <?php echo $msg ?>
+                                <a href="<?php echo bloginfo('url'); ?>">点此回首页</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+}
+
+function showresetpwdhtml(){
+    ?>
+    <div id="login-plane">
+        <div class="login-main" style="width: 100%;">
+            <div id="login-note">
+                提示
+            </div>
+            <div class="login-form">
+                <div class="login-title"><h3>找回密码</h3>
+
+                </div>
+
+                <i class="fa fa-user ico-login" aria-hidden="true"></i><input class="input-login input-pass"
+                                                                              name="user"
+                                                                              type="text"
+                                                                              placeholder="请输入用户名或者邮箱">
+                <div class="code-plane"><img class="img-code"
+                                             src="<?php echo FRAMEWORK_URI . "/VerificationCode.php" ?>"
+                                             alt=""><input class="input-login input-code"
+                                                           name="code"
+                                                           type="text"
+                                                           placeholder="验证码"></div>
+                <div>
+                    <button class="login-button" id="btn-getlostpass">找回密码</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+}

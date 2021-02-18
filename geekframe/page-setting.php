@@ -8,7 +8,7 @@ wp_enqueue_media();
         <div class="setmain">
             <div class="header-set-title">
                 <div class="header-set-title-name">
-                    <?php file_load_img('wordpress.svg') ?><h2>GorePress 设置中心</h2>
+                    <?php file_load_img('wordpress.svg') ?><h2>CorePress 设置中心</h2>
                 </div>
                 <div>
                     <el-link href="https://www.yuque.com/applek/corepress" :underline="false" target="_blank">
@@ -21,7 +21,7 @@ wp_enqueue_media();
             <div class="set-main-plane">
                 <div class="set-main-menu">
                     <el-menu
-                            default-active="1"
+                            default-active="2"
                             class="set-main-menu-list"
                             @select="selectMenu"
                     >
@@ -116,9 +116,12 @@ wp_enqueue_media();
 file_load_js('vue.min.js');
 file_load_js('axios.min.js');
 file_load_js('base64.js');
+file_load_js('jquery.min.js');
 file_load_lib('element/index.js', 'js');
 global $set;
+
 $setJosn = base64_encode(json_encode($set));
+
 ?>
     <script>
         var set = JSON.parse(BASE64.decode('<?php echo $setJosn ?>'));

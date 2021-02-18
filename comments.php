@@ -10,7 +10,7 @@ if (post_password_required())
         <div class="reply-title">
             发表评论
         </div>
-        <?
+        <?php
     }
     ?>
     <?php
@@ -27,6 +27,7 @@ if (post_password_required())
     ?>
     <?php
     global $current_user;
+    $regbtn = null;
     if (get_option('users_can_register')) {
         $regbtn = '<a href="' . wp_registration_url() . '"><button class="login-btn-header" style="margin-left: 20px">注册</button></a>';
     }
@@ -45,7 +46,7 @@ if (post_password_required())
             'comment_notes_after' => '',
             'id_form' => 'form_comment',
             'cancel_reply_link' => __('取消回复', 'corePress'),
-            'comment_field' => $user_avatar.'<div class="comment_form_textarea_box"><textarea class="comment_form_textarea" name="comment" id="comment" placeholder="发表你的看法" rows="5"></textarea><div id="comment_addplane">' . $comment_face . '</div></div></div>',
+            'comment_field' => $user_avatar . '<div class="comment_form_textarea_box"><textarea class="comment_form_textarea" name="comment" id="comment" placeholder="发表你的看法" rows="5"></textarea><div id="comment_addplane">' . $comment_face . '</div></div></div>',
             'fields' => apply_filters('comment_form_default_fields', array(
                 'author' => '<div class="comment_userinput"><div class="comment-form-author"><input id="author" name="author" placeholder="昵称(*)" type="text" value="' . esc_attr($commenter['comment_author']) . '" size="30"' . ($req ? ' class="required"' : '') . '></div>',
                 'email' => '<div class="comment-form-email"><input id="email" name="email" type="text" placeholder="邮箱(*)" value="' . esc_attr($commenter['comment_author_email']) . '"' . ($req ? ' class="required"' : '') . '></div>',
@@ -70,7 +71,7 @@ if (post_password_required())
     if (get_comments_number() == 0) {
         ?>
         <div class="comment-sofa">
-            <i class="fa fa-comments-o" aria-hidden="true"></i>沙发空余
+            <i class="fas fa-couch"></i> 沙发空余
         </div>
         <?php
     } else {

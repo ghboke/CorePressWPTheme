@@ -48,10 +48,10 @@ class CorePress_comments_widget extends WP_Widget
 
     function update($new_instance, $old_instance)
     {
-        $instance = $old_instance;
+      /*  $instance = $old_instance;
         $instance['num'] = absint($new_instance['num']);
-        $instance['title'] = sanitize_text_field($new_instance['title']);
-        return $instance;
+        $instance['title'] = sanitize_text_field($new_instance['title']);*/
+        return $new_instance;
     }
 
     function widget($args, $instance)

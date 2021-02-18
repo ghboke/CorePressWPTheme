@@ -1,9 +1,9 @@
 <?php
 // TEMPLATE NAME: CorrPress自定义注册页面
-/*if (islogin()) {
-    header("Location: /");
+if (islogin()) {
+    header("Location: " . get_bloginfo('url'));
     exit();
-}*/
+}
 global $set;
 ?>
 <!doctype html>
@@ -46,7 +46,7 @@ if ($set['user']['regpageimg'] != null) {
                                                                                    name="user"
                                                                                    type="text"
 
-                                                                                   placeholder="用户名">
+                                                                                   placeholder="用户名(只能英文)">
                     <i class="far fa-envelope ico-login" aria-hidden="true"></i><input class="input-login input-pass"
                                                                                        name="mail"
                                                                                        type="text"
@@ -82,6 +82,11 @@ if ($set['user']['regpageimg'] != null) {
                     </div>
                     <div>
                         <button class="login-button" id="btn-login">注册账户</button>
+                    </div>
+                    <div class="usercenter-info-text">
+                        <p><b>注册须知：</b></p>
+                        <p>用户名只支持英文用户名</p>
+                        <p>密码不能包含中文，长度8位以上，并且必须包含中英文和数字</p>
                     </div>
                 </div>
             </div>
@@ -126,6 +131,22 @@ if ($set['user']['regpageimg'] != null) {
                 }, 3000);
                 return;
             }
+
+            if (isChinese(pass) || isChinese(user)) {
+                addarelt('密码和用户名不支持中文', 'erro');
+                return;
+            }
+            if (!haveNumandLetter(pass)) {
+                addarelt('密码必须包含字母和数字', 'erro');
+                return;
+            }
+            if (pass.length < 8) {
+                addarelt('密码必须大于8位', 'erro');
+                return;
+            }
+
+
+
             $('#login-note').text('正在注册，请稍后');
             $('#login-note').css('visibility', 'visible');
             $.post('<?php echo AJAX_URL?>', {

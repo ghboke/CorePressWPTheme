@@ -74,52 +74,6 @@
 </div>
 <div class="set-plane">
     <div class="set-title">
-        底部图片1
-    </div>
-    <div class="set-object">
-        <el-input placeholder="" v-model="set.routine.footer_1_imgurl" size="small">
-            <el-button size="mini" slot="append" icon="el-icon-picture"
-                       @click="selectImg('set.routine.footer_1_imgurl')">上传
-            </el-button>
-        </el-input>
-    </div>
-</div>
-
-<div class="set-plane">
-    <div class="set-title">
-        底部图片1名称
-    </div>
-    <div class="set-object">
-        <el-input placeholder="" v-model="set.routine.footer_1_imgname" size="small">
-        </el-input>
-    </div>
-</div>
-
-<div class="set-plane">
-    <div class="set-title">
-        底部图片2
-    </div>
-    <div class="set-object">
-        <el-input placeholder="" v-model="set.routine.footer_2_imgurl" size="small">
-            <el-button size="mini" slot="append" icon="el-icon-picture"
-                       @click="selectImg('set.routine.footer_2_imgurl')">上传
-            </el-button>
-        </el-input>
-    </div>
-</div>
-
-<div class="set-plane">
-    <div class="set-title">
-        底部图片2名称
-    </div>
-    <div class="set-object">
-        <el-input placeholder="" v-model="set.routine.footer_2_imgname" size="small">
-        </el-input>
-    </div>
-</div>
-
-<div class="set-plane">
-    <div class="set-title">
         文章摘要长度
     </div>
     <div class="set-object">
@@ -139,6 +93,15 @@
     </div>
     <div class="set-object">
         <el-input placeholder="" v-model="set.routine.icp" size="small">
+        </el-input>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+        公安联网备案号
+    </div>
+    <div class="set-object">
+        <el-input placeholder="" v-model="set.routine.police" size="small">
         </el-input>
     </div>
 </div>

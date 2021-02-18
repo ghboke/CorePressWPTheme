@@ -1,7 +1,7 @@
 <?php
 global $set;
 
-$postitem['post_meta'] = json_decode(get_post_meta($post->ID, 'corepress_post_meta', true),true);
+$postitem['post_meta'] = json_decode(get_post_meta($post->ID, 'corepress_post_meta', true), true);
 
 
 if (has_excerpt()) {
@@ -19,10 +19,13 @@ if (post_password_required()) {
 $postitem['thumbnail'] = null;
 
 if (has_post_thumbnail()) {
+    if (!isset($postitem['post_meta']['postshow'])) {
+        $postitem['post_meta']['postshow'] = null;
+    }
     if ($postitem['post_meta']['postshow'] == 1) {
         $postitem['thumbnail'] = get_the_post_thumbnail_url($post, 'full');
     } else {
-        $postitem['thumbnail'] = get_the_post_thumbnail_url($post, 'thumbnail');
+        $postitem['thumbnail'] = get_the_post_thumbnail_url($post, 'full');
     }
 
 
@@ -43,11 +46,17 @@ if (function_exists('the_views')) {
 }
 $postitem['url'] = get_the_permalink();
 $postitem['author'] = get_the_author();
-$postitem['time'] = get_the_time('Y-m-d');
+
 $postitem['commentsnum'] = get_comments_number();
 $postitem['title'] = get_the_title();
 $postitem['category'] = get_the_category();
-
+$postitem['time'] = get_the_time('Y-m-d');
+$newpost = '';
+if ($set['theme']['postlist_newnote'] == 1) {
+    if (date("Y-m-d") == $postitem['time']) {
+        $newpost = 'post-item-new';
+    }
+}
 
 foreach ($postitem['category'] as $item) {
     $item->url = get_category_link($item->cat_ID);
@@ -58,15 +67,16 @@ if ($set['routine']['opennewlink'] == 1) {
 }
 if ($set['module']['imglazyload'] == 1) {
     $pathname = 'data-original';
-    $imgtag = '<img src="'.file_get_img_url('loading.png').'" data-original="' . $postitem['thumbnail'] . '">';
-}else
-{
+    $imgtag = '<img src="' . file_get_img_url('loading.png') . '" data-original="' . $postitem['thumbnail'] . '">';
+} else {
     $imgtag = '<img src="' . $postitem['thumbnail'] . '">';
 }
-
+if (empty($postitem['post_meta']['postshow'])) {
+    $postitem['post_meta']['postshow'] = 0;
+}
 if ($postitem['post_meta']['postshow'] == 1) {
     ?>
-    <li class="post-item post-item-type1">
+    <li class="post-item post-item-type1 <?php echo $newpost ?>">
         <h2>
             <?php
             if (is_sticky(get_the_ID())) {
@@ -78,7 +88,7 @@ if ($postitem['post_meta']['postshow'] == 1) {
                  target="<?php echo $target; ?>"><?php echo $postitem['title']; ?></a>
         </h2>
         <div class="post-item-thumbnail-type1">
-            <a href="<?php echo $postitem['url'] ?>" target="<?php echo $target; ?>"><?php echo $imgtag?></a>
+            <a href="<?php echo $postitem['url'] ?>" target="<?php echo $target; ?>"><?php echo $imgtag ?></a>
         </div>
         <div class="post-item-content post-item-content-type1">
             <?php echo $postitem['content'] ?>
@@ -114,12 +124,12 @@ if ($postitem['post_meta']['postshow'] == 1) {
         </div>
     </li>
     <?php
-}else{
+} else {
     ?>
-    <li class="post-item">
+    <li class="post-item <?php echo $newpost ?>">
         <div class="post-item-container">
             <div class="post-item-thumbnail">
-                <a href="<?php echo $postitem['url'] ?>" target="<?php echo $target; ?>"><?php echo $imgtag?></a>
+                <a href="<?php echo $postitem['url'] ?>" target="<?php echo $target; ?>"><?php echo $imgtag ?></a>
             </div>
             <div class="post-item-main">
                 <h2>
