@@ -1,5 +1,6 @@
 <?php
 the_post();
+global $set;
 ?>
     <!doctype html>
     <html lang="zh">
@@ -8,7 +9,6 @@ the_post();
     </head>
     <body>
     <div id="app">
-
         <header>
             <div class="header-main container">
                 <?php
@@ -18,12 +18,31 @@ the_post();
         </header>
         <div class="top-divider"></div>
         <main class="container">
+            <?php
+            if (wp_is_mobile()) {
+                if ($set['ad']['post_1_phone'] != null) {
+                    ?>
+                    <div class="ad-plane-post">
+                        <?php echo base64_decode($set['ad']['post_1_phone']); ?>
+                    </div>
+                    <?php
+                }
+            } else {
+                if ($set['ad']['post_1'] != null) {
+                    ?>
+                    <div class="ad-plane-post">
+                        <?php echo base64_decode($set['ad']['post_1']); ?>
+                    </div>
+                    <?php
+                }
+            }
+
+            ?>
+
             <div class="html-main">
                 <?php
-                global $set;
                 global $corepress_post_meta;
-
-                if ($corepress_post_meta['closesidebar'] == 1) {
+                if ($corepress_post_meta['closesidebar'] == 1 || $set['theme']['sidebar']['post']) {
                     ?>
                     <style>
                         body .post-info-right {
@@ -64,6 +83,25 @@ the_post();
                 ?>
 
             </div>
+            <?php
+            if (wp_is_mobile()) {
+                if ($set['ad']['post_5_phone'] != null) {
+                    ?>
+                    <div class="ad-plane-post-bottom">
+                        <?php echo base64_decode($set['ad']['post_5_phone']); ?>
+                    </div>
+                    <?php
+                }
+            } else {
+                if ($set['ad']['post_5'] != null) {
+                    ?>
+                    <div class="ad-plane-post-bottom">
+                        <?php echo base64_decode($set['ad']['post_5']); ?>
+                    </div>
+                    <?php
+                }
+            }
+            ?>
         </main>
         <footer>
             <?php get_footer(); ?>

@@ -39,13 +39,30 @@ if ($set['routine']['favicon'] != null) {
         --fontSelectedColor: <?php echo $set['theme']['fontSelectedColor']?> !important;
     }
 </style>
-<?php
 
+<?php
+if ($set['module']['preventred'] == 1) {
+    if (is_wx_qq()) {
+        die('网站不支持QQ或者微信内访问，请点击右上角菜单，使用外部浏览器打开网站');
+    }
+}
+if ($set['theme']['font'] != 'no') {
+    echo '<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/ghboke/corepresscdn@master/static/lib/font/' . $set['theme']['font'] . '/font.css">';
+    ?>
+    <style>
+        html, textarea {
+            font-family: <?php echo $set['theme']['font']?>, PingFang\ SC, Hiragino\ Sans\ GB, Microsoft\ YaHei, STHeiti, WenQuanYi\ Micro\ Hei, Helvetica, Arial, sans-serif !important;
+        }
+    </style>
+    <?php
+}
 
 
 file_load_css('main-mobile.css');
+loadiconfont_by_cdn();
+
 file_load_css('main.css');
-file_load_lib('fontawesome5/css/all.min.css', 'css');
+
 file_load_js('jquery.min.js');
 wp_head();
 if ($set['module']['imglazyload'] == 1) {
@@ -56,6 +73,7 @@ if (is_home()) {
     file_load_lib('swiper/swiper.min.css', 'css');
     file_load_lib('swiper/swiper.min.js', 'js');
 }
+
 
 global $set;
 if (is_home()) {

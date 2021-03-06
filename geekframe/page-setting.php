@@ -65,6 +65,10 @@ wp_enqueue_media();
                             <i class="el-icon-link"></i>
                             <span slot="title">插入代码</span>
                         </el-menu-item>
+                        <el-menu-item index="12">
+                            <i class="el-icon-s-order"></i>
+                            <span slot="title">广告代码</span>
+                        </el-menu-item>
                         <el-menu-item index="7">
                             <i class="el-icon-info"></i>
                             <span slot="title">关于主题</span>
@@ -104,6 +108,9 @@ wp_enqueue_media();
                     </div>
                     <div v-if="menu_active==11">
                         <?php get_template_part('component/set-module'); ?>
+                    </div>
+                    <div v-if="menu_active==12">
+                        <?php get_template_part('component/set-ad'); ?>
                     </div>
                 </div>
             </div>

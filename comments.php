@@ -1,8 +1,30 @@
 <?php
-if (post_password_required())
+if (post_password_required()) {
     return;
+}
+global $set;
 ?>
-
+<?php
+if (is_single()) {
+    if (wp_is_mobile()) {
+        if ($set['ad']['post_4_phone'] != null) {
+            ?>
+            <div class="ad-plane-post-comment">
+                <?php echo base64_decode($set['ad']['post_4_phone']); ?>
+            </div>
+            <?php
+        }
+    } else {
+        if ($set['ad']['post_4'] != null) {
+            ?>
+            <div class="ad-plane-post-comment">
+                <?php echo base64_decode($set['ad']['post_4']); ?>
+            </div>
+            <?php
+        }
+    }
+}
+?>
 
 <div id="comments" class="responsesWrapper">
     <?php if (comments_open()) {
@@ -14,7 +36,7 @@ if (post_password_required())
     }
     ?>
     <?php
-    global $set;
+
     $comment_face = '';
     if ($set['comment']['face'] == 1) {
         $comment_face = '<button class="popover-btn popover-btn-face" type="button"><i class="far fa-smile-wink"></i> 添加表情</button>
@@ -93,7 +115,7 @@ if (post_password_required())
     ?>
 
     <script type='text/javascript'
-            src='<?php echo get_bloginfo('siteurl') ?>/wp-includes/js/comment-reply.min.js?ver=5.1.1'></script>
+            src='<?php echo get_bloginfo('url') ?>/wp-includes/js/comment-reply.min.js?ver=5.1.1'></script>
     <script type='text/javascript'>
 
         $('body').on('click', '.comment-reply-link', function (e) {

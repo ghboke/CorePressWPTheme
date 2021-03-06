@@ -45,25 +45,25 @@
                 </div>
                 <?php
             } else
-            if ($set['theme']['sidebar_position'] == 1) {
-                ?>
-                <div class="post-main">
-                    <?php get_template_part('component/post-main-index'); ?>
-                </div>
-                <div class="sidebar">
-                    <?php dynamic_sidebar('index_sidebar'); ?>
-                </div>
-                <?php
-            } else {
-                ?>
-                <div class="sidebar">
-                    <?php dynamic_sidebar('index_sidebar'); ?>
-                </div>
-                <div class="post-main">
-                    <?php get_template_part('component/post-main-index'); ?>
-                </div>
-                <?php
-            }
+                if ($set['theme']['sidebar_position'] == 1) {
+                    ?>
+                    <div class="post-main">
+                        <?php get_template_part('component/post-main-index'); ?>
+                    </div>
+                    <div class="sidebar">
+                        <?php dynamic_sidebar('index_sidebar'); ?>
+                    </div>
+                    <?php
+                } else {
+                    ?>
+                    <div class="sidebar">
+                        <?php dynamic_sidebar('index_sidebar'); ?>
+                    </div>
+                    <div class="post-main">
+                        <?php get_template_part('component/post-main-index'); ?>
+                    </div>
+                    <?php
+                }
             ?>
         </div>
     </main>

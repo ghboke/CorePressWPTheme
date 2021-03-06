@@ -19,7 +19,7 @@ function my_comment($comment, $args, $depth)
     }
     ?>
     <li class="comment">
-    <div class="comment-item" id="li-comment-<?php comment_ID(); ?>">
+    <div class="comment-item" id="comment-<?php comment_ID(); ?>">
         <div class="comment-media">
             <div class="avatar-img">
                 <?php if (function_exists('get_avatar') && get_option('show_avatars')) {

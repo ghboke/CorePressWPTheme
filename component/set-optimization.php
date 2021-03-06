@@ -1,5 +1,24 @@
-
 <h3>输出优化</h3>
+<div class="set-plane">
+    <div class="set-title">
+        自动英文固定链接
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.optimization.autoenfixedtitle"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+    </div>
+    <div class="set-object">
+        写文章的时候，如果是中文标题，固定链接也默认为中文，开启后，默认会设置中文为首拼字母
+    </div>
+</div>
 <div class="set-plane">
     <div class="set-title">
         移除版本号
@@ -28,7 +47,7 @@
     </div>
     <div class="set-object">
         <el-switch
-            v-model="set.optimization.removesworg"
+            v-model="set.optimization.removednsprefetch"
             :active-value="1"
             :inactive-value="0"
         >
@@ -131,8 +150,71 @@
         WordPress 5.0以后加载的古腾堡编辑器样式，前端不需要
     </div>
 </div>
+<h3>函数禁用</h3>
+<div class="set-plane">
+    <div class="set-title">
+        禁止 translations_api
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.optimization.banfun.translations_api"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+    </div>
+    <div class="set-object">
+        没卵用的功能，进入设置后，会访问WordPress.org查询翻译，非常慢
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+        禁止 wp_check_php_version
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.optimization.banfun.wp_check_php_version"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+    </div>
+    <div class="set-object">
+        没卵用的功能，进入设置后，会访问WordPress.org查询提服务器PHP版本
+    </div>
+</div>
+
+<div class="set-plane">
+    <div class="set-title">
+        禁止 wp_check_browser_version
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.optimization.banfun.wp_check_browser_version"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+    </div>
+    <div class="set-object">
+        没卵用的功能，WordPress会时不时提交你的浏览器版本
+    </div>
+</div>
 
 <h3>功能开关</h3>
+
 
 <div class="set-plane">
     <div class="set-title">
@@ -275,7 +357,7 @@
         WordPress在用户修改密码和邮箱，用户注册会发送邮件给站长邮箱，建议关闭
     </div>
 </div>
-<h3>评论优化</h3>
+<h3>CDN公共库加速</h3>
 
 <div class="set-plane">
     <div class="set-title">
@@ -293,5 +375,22 @@
     </div>
     <div class="set-object">
         评论默认头像使用的Gravatar，国内打开非常缓慢，拖累系统速度，建议使用CDN加速
+    </div>
+</div>
+
+<div class="set-plane">
+    <div class="set-title">
+        字体图标库
+    </div>
+    <div class="set-object">
+        <el-radio v-model="set.optimization.iconfontcdn" label="JsDelivr">JsDelivr</el-radio>
+        <el-radio v-model="set.optimization.iconfontcdn" label="no">不加速</el-radio>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+    </div>
+    <div class="set-object">
+       字体图标大约1M体积大小，推荐使用CDN，CDN版本为完整Pro图标，支持IE8
     </div>
 </div>

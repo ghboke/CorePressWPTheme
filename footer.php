@@ -2,7 +2,10 @@
 global $set;
 echo '<script>console.log("\n %c CorePress主题v ' . THEME_VERSIONNAME . ' %c by applek | www.lovestu.com", "color:#fff;background:#409EFF;padding:5px 0;", "color:#eee;background:#444;padding:5px 10px;");
 </script>';
-/*吃水不忘挖井人，请勿删除版权，让更多人使用，作者才有动力更新下去*/
+/*吃水不忘挖井人，请勿删除版权，让更多人使用，作者才有动力更新下去
+删版权可能会影响SEO哦，good luck
+*/
+
 if ($set['code']['footcode'] != null) {
     echo base64_decode($set['code']['footcode']);
 }
@@ -44,7 +47,7 @@ if ($set['code']['alifront'] != null) {
                 if (reprint.copylenopen == 1) {
                     if (copytext.length > reprint.copylen) {
                         addarelt('复制内容太长，禁止复制', 'erro');
-                        JScopyText('');
+                        JScopyText(' ');
                         copynotmsg = 0;
                     } else {
                         copyaddurl(copytext);
@@ -91,6 +94,10 @@ if ($set['code']['alifront'] != null) {
     });
 
     $(document).ready(function () {
+
+
+
+        $('.menu-header-list > .menu-item-has-children');
         <?php
         if ($set['module']['imglightbox'] == 1) {
 
@@ -129,6 +136,10 @@ if ($set['code']['alifront'] != null) {
         var html = '';
         $(".post-content h2,.post-content h3").each(function () {
             var tagName = $(this)[0].tagName.toLowerCase();
+            console.log();
+            if ($(this).parent().attr('class') == 'zd-plane-content') {
+                return;
+            }
             $(this).attr('catalog', 'catalog-' + tagName + '-' + i);
             var clickargs = "go_catalog('catalog-" + tagName + "-" + i + "','" + tagName + "')";
             html = html + '<p catalogtagName="' + tagName + '" catalog="' + 'catalog-' + tagName + '-' + i + '" class="catalog-item" onclick="' + clickargs + '">' + $(this).html() + '</p>';
@@ -241,12 +252,13 @@ if ($set['module']['highlight'] == 1) {
                 <?php
                 get_template_part('component/nav-footer');
                 //吃水不忘挖井人，请勿主题信息，让更多人使用，作者才有动力更新下去
+                //删版权可能会影响SEO哦，good luck
                 ?>
                 <div class="footer-info">
                     Copyright © 2020 <?php bloginfo('name'); ?>
                     <span class="theme-copyright">
                      <a
-                             href="https://www.lovestu.com/corepress.html">CorePress主题</a>
+                             href="https://www.lovestu.com/corepress.html">CorePress Theme</a>
                 </span>
                     Powered by WordPress
                 </div>

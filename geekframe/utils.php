@@ -9,6 +9,11 @@ function file_load_js($path)
     echo '<script src="' . THEME_JS_PATH . '/' . $path . '?v=' . THEME_VERSIONNAME . '"></script>';
 }
 
+function load_js_parameter($name, $arr)
+{
+    echo '<script>var ' . $name . '=JSON.parse(' . "'" . json_encode($arr) . "'" . ')</script>';
+}
+
 function file_load_img($path)
 {
     echo "<img src=\"" . THEME_IMG_PATH . "/{$path}\">";
@@ -21,8 +26,12 @@ function file_get_img_url($path)
 
 function file_echo_svg($path)
 {
-    $size = readfile(THEME_PATH . '/static/img/' . $path);
-    //echo file_get_contents(THEME_IMG_PATH . "/" . $path);
+
+    global $wp_filesystem;
+    $svg = $wp_filesystem->get_contents(THEME_PATH . '/static/img/' . $path);
+    print_r($svg);
+    //readfile(THEME_PATH . '/static/img/' . $path);
+
 }
 
 function file_load_face()
@@ -333,4 +342,198 @@ function ajax_die($msg, $code = 0)
     $json['code'] = $code;
     $json['msg'] = $msg;
     wp_die(json_encode($json));
+}
+
+function is_wx_qq()
+{
+    $user_agent = $_SERVER['HTTP_USER_AGENT'];
+    if (strpos($user_agent, 'MicroMessenger') == false && strpos($user_agent, 'QQ/') == false) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function loadiconfont_by_cdn()
+{
+    global $set;
+    if ($set['optimization']['iconfontcdn'] == 'JsDelivr') {
+        echo '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ghboke/corepresscdn@master/static/lib/fontawesome5pro/css/all.min.css?v=' . THEME_VERSIONNAME . '">';
+
+    } else {
+        file_load_lib('fontawesome5/css/all.min.css', 'css');
+    }
+
+}
+
+function corepress_pinyin_long($zh)
+{
+    //获取整条字符串汉字拼音首字母
+    $ret = "";
+    $zh = preg_replace('# #', '', $zh);
+    $s1 = iconv("UTF-8", "gb2312", $zh);
+    $s2 = iconv("gb2312", "UTF-8", $s1);
+    if ($s2 == $zh) {
+        $zh = $s1;
+    }
+    for ($i = 0; $i < strlen($zh); $i++) {
+        $s1 = substr($zh, $i, 1);
+        $p = ord($s1);
+        if ($p > 160) {
+            $s2 = substr($zh, $i++, 2);
+            $ret .= corepress_getFirstPing($s2);
+        } else {
+            $ret .= $s1;
+        }
+    }
+    return $ret;
+}
+
+function replace_symbol($str)
+{
+    $str = str_replace('？', '', $str);
+    $str = str_replace('`', '', $str);
+    $str = str_replace('·', '', $str);
+    $str = str_replace('~', '', $str);
+    $str = str_replace('!', '', $str);
+    $str = str_replace('！', '', $str);
+    $str = str_replace('@', '', $str);
+    $str = str_replace('#', '', $str);
+    $str = str_replace('$', '', $str);
+    $str = str_replace('￥', '', $str);
+    $str = str_replace('%', '', $str);
+    $str = str_replace('^', '', $str);
+    $str = str_replace('……', '', $str);
+    $str = str_replace('&', '', $str);
+    $str = str_replace('*', '', $str);
+    $str = str_replace('(', '', $str);
+    $str = str_replace(')', '', $str);
+    $str = str_replace('（', '', $str);
+    $str = str_replace('）', '', $str);
+    $str = str_replace('-', '', $str);
+    $str = str_replace('_', '', $str);
+    $str = str_replace('——', '', $str);
+    $str = str_replace('+', '', $str);
+    $str = str_replace('=', '', $str);
+    $str = str_replace('|', '', $str);
+    $str = str_replace('\\', '', $str);
+    $str = str_replace('[', '', $str);
+    $str = str_replace(']', '', $str);
+    $str = str_replace('【', '', $str);
+    $str = str_replace('】', '', $str);
+    $str = str_replace('{', '', $str);
+    $str = str_replace('}', '', $str);
+    $str = str_replace(';', '', $str);
+    $str = str_replace('；', '', $str);
+    $str = str_replace(':', '', $str);
+    $str = str_replace('：', '', $str);
+    $str = str_replace('\'', '', $str);
+    $str = str_replace('"', '', $str);
+    $str = str_replace('“', '', $str);
+    $str = str_replace('”', '', $str);
+    $str = str_replace(',', '', $str);
+    $str = str_replace('，', '', $str);
+    $str = str_replace('<', '', $str);
+    $str = str_replace('>', '', $str);
+    $str = str_replace('《', '', $str);
+    $str = str_replace('》', '', $str);
+    $str = str_replace('.', '', $str);
+    $str = str_replace('。', '', $str);
+    $str = str_replace('/', '', $str);
+    $str = str_replace('、', '', $str);
+    $str = str_replace('?', '', $str);
+    $str = str_replace('？', '', $str);
+    return trim($str);
+}
+
+/**
+ * 获取首字符拼音首字母
+ * 判断是否为汉字 !preg_match('/^[\x{4e00}-\x{9fa5}]+$/u', $s0)
+ * 已知 “泸”，无法识别
+ */
+function corepress_getFirstPing($str)
+{
+    $s0 = mb_substr($str, 0, 1, 'utf-8');
+    $fchar = ord($s0[0]);
+    if ($fchar >= ord("A") and $fchar <= ord("z")) return strtoupper($s0[0]);
+    $s1 = iconv("UTF-8", "gb2312", $s0);
+    $s2 = iconv("gb2312", "UTF-8", $s1);
+    if ($s2 == $s0) {
+        $s = $s1;
+    } else {
+        $s = $s0;
+    }
+    $asc = ord($s[0]) * 256 + ord($s[0]) - 65536;
+    if ($asc >= -20319 && $asc <= -20284) return "A";
+    if ($asc >= -20283 && $asc <= -19776) return "B";
+    if ($asc >= -19775 && $asc <= -19219) return "C";
+    if ($asc >= -19218 && $asc <= -18711) return "D";
+    if ($asc >= -18710 && $asc <= -18527) return "E";
+    if ($asc >= -18526 && $asc <= -18240) return "F";
+    if ($asc >= -18239 && $asc <= -17923) return "G";
+    if ($asc >= -17922 && $asc <= -17418) return "H";
+    if ($asc >= -17922 && $asc <= -17418) return "I";
+    if ($asc >= -17417 && $asc <= -16475) return "J";
+    if ($asc >= -16474 && $asc <= -16213) return "K";
+    if ($asc >= -16212 && $asc <= -15641) return "L";
+    if ($asc >= -15640 && $asc <= -15166) return "M";
+    if ($asc >= -15165 && $asc <= -14923) return "N";
+    if ($asc >= -14922 && $asc <= -14915) return "O";
+    if ($asc >= -14914 && $asc <= -14631) return "P";
+    if ($asc >= -14630 && $asc <= -14150) return "Q";
+    if ($asc >= -14149 && $asc <= -14091) return "R";
+    if ($asc >= -14090 && $asc <= -13319) return "S";
+    if ($asc >= -13318 && $asc <= -12839) return "T";
+    if ($asc >= -12838 && $asc <= -12557) return "W";
+    if ($asc >= -12556 && $asc <= -11848) return "X";
+    if ($asc >= -11847 && $asc <= -11056) return "Y";
+    if ($asc >= -11055 && $asc <= -10247) return "Z";
+    return $s0;
+}
+
+function the_breadcrumb()
+{
+    echo '<span class="corepress-crumbs-ul">';
+    if (!is_home()) {
+        echo '<li><a href="';
+        echo get_option('home');
+        echo '">';
+        echo '<i class="fas fa-home"></i> 主页';
+        echo "</a></li>";
+        if (is_category() || is_single()) {
+            echo '<li>';
+            the_category(' </li><li> ');
+            if (is_single()) {
+                echo "</li>";
+            }
+        } elseif (is_page()) {
+            echo '<li>';
+            echo the_title();
+            echo '</li>';
+        }
+    } elseif (is_tag()) {
+        single_tag_title();
+    } elseif (is_day()) {
+        echo "<li>Archive for ";
+        the_time('F jS, Y');
+        echo '</li>';
+    } elseif (is_month()) {
+        echo "<li>Archive for ";
+        the_time('F, Y');
+        echo '</li>';
+    } elseif (is_year()) {
+        echo "<li>Archive for ";
+        the_time('Y');
+        echo '</li>';
+    } elseif (is_author()) {
+        echo "<li>Author Archive";
+        echo '</li>';
+    } elseif (isset($_GET['paged']) && !empty($_GET['paged'])) {
+        echo "<li>Blog Archives";
+        echo '</li>';
+    } elseif (is_search()) {
+        echo "<li>Search Results";
+        echo '</li>';
+    }
+    echo '</span>';
 }

@@ -21,7 +21,12 @@
         </el-input>
     </div>
 </div>
-
+<div class="set-plane set-plane-note">
+    <div class="set-title"></div>
+    <div class="set-object">
+        请在页面->创建页面->页面模板选择[CorrPress自定义用户中心页面]
+    </div>
+</div>
 
 <h3>自定义登录</h3>
 <div class="set-plane">
@@ -226,8 +231,6 @@ if (!get_option('users_can_register')) {
     <div class="set-title"></div>
     <div class="set-object">
         请在页面->创建页面->页面模板选择[CorrPress自定义密码找回页面]
-        <el-tag type="danger" size="mini">无法登录</el-tag>
-        ！
     </div>
 </div>
 

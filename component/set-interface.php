@@ -67,7 +67,27 @@
             <div>
                 <el-button type="primary" size="small" @click="reThemeColor(1)">恢复默认</el-button>
             </div>
+
         </div>
+    </div>
+</div>
+<h3>字体设置</h3>
+<div class="set-plane">
+    <div class="set-title">
+        选择字体
+    </div>
+    <div class="set-object">
+        <el-radio v-model="set.theme.font" label="no">默认</el-radio>
+        <el-radio v-model="set.theme.font" label="ceym">仓耳与墨</el-radio>
+        <el-radio v-model="set.theme.font" label="zkklt">站酷快乐体</el-radio>
+
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+    </div>
+    <div class="set-object">
+        字体CDN来自jsdelivr，不同的字体加载速度不一样
     </div>
 </div>
 <h3>背景图片设置</h3>
@@ -139,3 +159,68 @@
     </div>
 </div>
 
+<h3>侧边栏</h3>
+
+<div class="set-plane">
+    <div class="set-title">
+        关闭首页侧边栏
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.theme.sidebar.index"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+        关闭搜索，分类标签侧边栏
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.theme.sidebar.other"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+        关闭内页侧边栏
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.theme.sidebar.post"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+
+<div class="set-plane">
+    <div class="set-title">
+    </div>
+    <div class="set-object">
+       本设置功能比文章设置中关闭侧边栏的权重高
+    </div>
+</div>
+
+<h3>文章设置</h3>
+
+<div class="set-plane">
+    <div class="set-title">
+        开启面包屑导航
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.theme.crumbs"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>

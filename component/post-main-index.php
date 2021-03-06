@@ -3,8 +3,28 @@ global $paged;
 if (!$paged) {
     $paged = 1;
 }
+
 if (is_home() && $paged == 1) {
     global $set;
+
+    if (wp_is_mobile()) {
+        if ($set['ad']['index_1_phone'] != null) {
+            ?>
+            <div class="swiper-container carousel">
+                <?php echo base64_decode($set['ad']['index_1_phone']); ?>
+            </div>
+            <?php
+        }
+    } else {
+        if ($set['ad']['index_1'] != null) {
+            ?>
+            <div class="swiper-container carousel">
+                <?php echo base64_decode($set['ad']['index_1']); ?>
+            </div>
+            <?php
+        }
+    }
+
     if ($set['index']['swiperlist'] != null || count($set['index']['swiperlist']) > 0) {
         ?>
         <?php if ($set['index']['swiperlist'] !== null && count($set['index']['swiperlist'])) {
@@ -30,14 +50,14 @@ if (is_home() && $paged == 1) {
                         ?>
                     </div>
                     <div class="swiper-pagination"></div>
-                    <div class="corepress-swiper-button-next corepress-swiper-button"><i class="fal fa-chevron-right"></i></div>
-                    <div class="corepress-swiper-button-prev corepress-swiper-button"><i class="fal fa-chevron-left"></i></div>
+                    <div class="swiper-button-prev "></div>
+                    <div class="swiper-button-next"></div>
                 </div>
             </div>
         <?php } ?>
         <script>
             window.onload = function () {
-                var mySwiper = new Swiper('.carousel', {
+                var mySwiper = new Swiper('.swiper-container', {
                     loop: true,
                     autoplay: true,
                     delay: 3000,
@@ -46,8 +66,8 @@ if (is_home() && $paged == 1) {
                     },
                     // 如果需要前进后退按钮
                     navigation: {
-                        nextEl: '.corepress-swiper-button-next',
-                        prevEl: '.corepress-swiper-button-prev',
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
                     },
                 })
             }
@@ -92,7 +112,26 @@ if (is_home() && $paged == 1) {
     }
 
 }
+
+if (wp_is_mobile()) {
+    if ($set['ad']['index_2_phone'] != null) {
+        ?>
+        <div class="swiper-container carousel">
+            <?php echo base64_decode($set['ad']['index_2_phone']); ?>
+        </div>
+        <?php
+    }
+} else {
+    if ($set['ad']['index_2'] != null) {
+        ?>
+        <div class="swiper-container carousel">
+            <?php echo base64_decode($set['ad']['index_2']); ?>
+        </div>
+        <?php
+    }
+}
 ?>
+
 <div class="post-list-page-plane">
     <div class="list-plane-title">
         <?php

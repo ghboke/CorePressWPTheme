@@ -4,7 +4,8 @@ function CorePress_saveThemeset()
     global $set;
     $data['code'] = 200;
     $setdata['version'] = THEME_VERSION;
-    $json = json_decode(file_get_contents('php://input'), true);
+    global $wp_filesystem;
+    $json = json_decode($wp_filesystem->get_contents('php://input'), true);
     if ($json) {
         $setdata['option'] = base64_decode($json['save']);
         if (options::saveData($setdata)) {
@@ -656,6 +657,16 @@ function CorePress_changebind()
         ajax_die('类型错误');
     }
 }
+
+function corepress_getfirstspell()
+{
+    $text = replace_symbol($_POST['text']);
+    $json['code'] = 1;
+    $json['data'] = corepress_pinyin_long($text);
+    wp_die(json_encode($json));
+}
+
+add_action('wp_ajax_corepress_getfirstspell', 'corepress_getfirstspell');
 
 add_action('wp_ajax_corepress_changebind', 'CorePress_changebind');
 add_action('wp_ajax_corepress_changepwd', 'CorePress_changepwd');

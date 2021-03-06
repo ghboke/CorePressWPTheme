@@ -95,6 +95,17 @@ remove_filter('the_content', 'wptexturize');
 //禁止对标签自动校正
 remove_filter('the_content', 'balanceTags');
 
+//WordPress函数禁用
+if ($set['optimization']['banfun']['translations_api'] == 1) {
+    add_filter('translations_api', '__return_false');
+}
+if ($set['optimization']['banfun']['wp_check_php_version'] == 1) {
+    add_filter('wp_check_php_version', '__return_false');
+}
+if ($set['optimization']['banfun']['wp_check_browser_version'] == 1) {
+    add_filter('wp_check_browser_version', '__return_false');
+}
+
 
 if ($set['optimization']['notification_reg_email'] === 1) {
 //关闭新用户注册用户邮件通知
@@ -109,7 +120,14 @@ if ($set['optimization']['notification_changepwdandmail_email'] === 1) {
     add_filter('wp_new_user_notification_email_admin', '__return_false');
     //关闭更新邮箱用户邮件通知
 }
+if ($set['optimization']['autoenfixedtitle'] == 1) {
+    add_filter('get_sample_permalink_html', 'corepress_sample_permalink');
 
+}
+function corepress_sample_permalink($html, $new_title = null, $new_slug = null)
+{
+    return $html . '<span id="btn-link-cntoen"><button type="button" class="button button-small hide-if-no-js">转换成英文</button></span>';
+}
 
 function ban_scripts()
 {
@@ -211,6 +229,29 @@ if ($set['optimization']['banimgresolving'] === 1) {
     // 禁止大图片压缩
     add_filter('big_image_size_threshold', '__return_false');
 }
+//支持svg
+function upload_support($mimes = array())
+{
+    $mimes['svg'] = 'image/svg+xml';
+    return $mimes;
+}
+
+//支持webp
+function webp_filter_mime_types($array)
+{
+    $array['webp'] = 'image/webp';
+    return $array;
+}
+function webp_file_display($result, $path) {
+    $info = @getimagesize( $path );
+    if($info['mime'] == 'image/webp') {
+        $result = true;
+    }
+    return $result;
+}
+add_filter( 'file_is_displayable_image', 'webp_file_display');
+add_filter('mime_types', 'webp_filter_mime_types');
+add_filter('upload_mimes', 'upload_support');
 
 if ($set['optimization']['closeemoji'] === 1) {
     //禁止emoji
@@ -244,19 +285,19 @@ function CorePress_replace_avatar($avatarUrl)
     $avatarUrl = str_replace("http://", "https://", $avatarUrl);
     if ($set['optimization']['gravatarsite'] == 'v2ex') {
         //$avatar = preg_replace(["/[0-9]\.gravatar\.com\/avatar/", "/secure.gravatar\.com\/avatar/"], "cdn.v2ex.com/gravatar", $avatarUrl);
-        $avatarUrl = str_replace(array("www.gravatar.com/avatar", "0.gravatar.com/avatar", "1.gravatar.com/avatar", "2.gravatar.com/avatar"), "cdn.v2ex.com/gravatar", $avatarUrl);
+        $avatarUrl = str_replace(array("secure.gravatar.com/avatar", "www.gravatar.com/avatar", "0.gravatar.com/avatar", "1.gravatar.com/avatar", "2.gravatar.com/avatar"), "cdn.v2ex.com/gravatar", $avatarUrl);
 
     } elseif ($set['optimization']['gravatarsite'] == 'geek') {
-        $avatarUrl = str_replace(array("www.gravatar.com/avatar", "0.gravatar.com/avatar", "1.gravatar.com/avatar", "2.gravatar.com/avatar"), "sdn.geekzu.org/avatar", $avatarUrl);
+        $avatarUrl = str_replace(array("secure.gravatar.com/avatar", "www.gravatar.com/avatar", "0.gravatar.com/avatar", "1.gravatar.com/avatar", "2.gravatar.com/avatar"), "sdn.geekzu.org/avatar", $avatarUrl);
     } elseif ($set['optimization']['gravatarsite'] == 'cn') {
-        $avatarUrl = str_replace(array("www.gravatar.com/avatar", "0.gravatar.com/avatar", "1.gravatar.com/avatar", "2.gravatar.com/avatar"), "cn.gravatar.com/avatar", $avatarUrl);
+        $avatarUrl = str_replace(array("secure.gravatar.com/avatar", "www.gravatar.com/avatar", "0.gravatar.com/avatar", "1.gravatar.com/avatar", "2.gravatar.com/avatar"), "cn.gravatar.com/avatar", $avatarUrl);
     }
     return $avatarUrl;
 }
 
 //print_r($set['optimization']['gravatarsite'] );
-add_filter('get_avatar', 'CorePress_replace_avatar');
-add_filter('get_avatar_url', 'CorePress_replace_avatar');
+add_filter('get_avatar', 'CorePress_replace_avatar', 20);
+add_filter('get_avatar_url', 'CorePress_replace_avatar', 20);
 
 
 add_filter('emoji_svg_url', '__return_false');
@@ -308,7 +349,7 @@ function corepress_updateTheme()
         update_option('corepress_updatetheme', time());
     }
     if (time() - $lasttime > 60 * 60) {
-        $url = 'http://theme.lovestu.com/version.php?site=' . get_bloginfo('siteurl', 'display') . '&n=1&v=' . THEME_VERSION;
+        $url = 'http://theme.lovestu.com/version.php?site=' . get_bloginfo('url', 'display') . '&n=1&v=' . THEME_VERSION;
         $request = new WP_Http;
         $result = $request->request($url);
         if (!is_wp_error($result)) {
@@ -341,19 +382,18 @@ function corepress_comment_face($incoming_comment)
 }
 
 
-function corepress_loginurl($url)
+function corepress_loginurl($login_url, $redirect, $force_reauth)
 {
     global $set;
-
     if ($set['user']['loginpage'] == 1) {
-        $query = parse_url($url);
-        if (!isset($query['query'])) {
-            return $url;
+        $login_url = $set['user']['lgoinpageurl'];
+        if (!empty($redirect)) {
+            $login_url = add_query_arg('redirect_to', urlencode($redirect), $login_url);
         }
-        parse_str($query['query'], $output);
-        return $set['user']['lgoinpageurl'] . '?re=' . $output['redirect_to'];
+        return $login_url;
     }
-    return $url;
+
+    return $login_url;
 }
 
 function corepress_registerurl($url)
@@ -416,9 +456,20 @@ function corepress_addbutton()
         </script>
         <?php
         file_load_js('editor-functions.js');
+        load_js_parameter('ajaxobj', array('ajax_url' => admin_url('admin-ajax.php')));
         add_filter('mce_external_plugins', 'corepress_add_editor_plugin');
     }
 }
+
+function corepress_block_editor_loadobj() {
+    file_load_js('vue.min.js');
+    file_load_css('admin.css');
+    file_load_lib('element/index.css', 'css');
+    file_load_lib('element/index.js', 'js');
+    file_load_js('tools.js');
+    file_load_css('editor-window.css');
+}
+add_action( 'enqueue_block_editor_assets', 'corepress_block_editor_loadobj' );
 
 function corepress_add_editor_plugin($plugin_array)
 {
@@ -435,7 +486,7 @@ add_action('media_buttons', 'corepress_add_media_button');
 add_action('edit_form_top', 'corepress_addbutton');
 add_filter('comment_text', 'corepress_comment_face');
 add_filter('comment_text_rss', 'corepress_comment_face');
-add_filter('login_url', 'corepress_loginurl', 1);
+add_filter('login_url', 'corepress_loginurl', 10, 3);
 add_filter('register_url', 'corepress_registerurl', 1);
 add_filter('lostpassword_url', 'corepress_lostpassword_url', 1);
 
@@ -493,6 +544,9 @@ function corepress_meta_box_form($post)
     }
     if (!isset($corepress_post_meta['set']['postshow'])) {
         $corepress_post_meta['set']['postshow'] = '0';
+    }
+    if (!isset($corepress_post_meta['set']['thumbnail'])) {
+        $corepress_post_meta['set']['thumbnail'] = '';
     }
 
     ?>
@@ -562,8 +616,8 @@ function corepress_meta_box_form($post)
                 <el-button type="primary" size="small" @click="retagcolor('#409EFF')">恢复默认</el-button>
                 <el-button type="success" size="small" @click="retagcolor('#67C23A')">#67C23A</el-button>
                 <el-button type="info" size="small" @click="retagcolor('#909399')">#909399</el-button>
-                <el-button type="warning" size="small" @click="retagcolor('#F56C6C')">#F56C6C</el-button>
-                <el-button type="danger" size="small" @click="retagcolor('#E6A23C')">#E6A23C</el-button>
+                <el-button type="warning" size="small" @click="retagcolor('#E6A23C')">#E6A23C</el-button>
+                <el-button type="danger" size="small" @click="retagcolor('#F56C6C')">#F56C6C</el-button>
             </div>
         </div>
 
@@ -617,6 +671,16 @@ function corepress_meta_box_form($post)
                             :value="item.value">
                     </el-option>
                 </el-select>
+            </div>
+        </div>
+
+        <div class="set-plane">
+            <div class="set-title">
+                自定义缩略图地址
+            </div>
+            <div class="set-object">
+                <el-input placeholder="" v-model="set.thumbnail" size="small">
+                </el-input>
             </div>
         </div>
     </div>
@@ -725,3 +789,11 @@ function disable_open_sans($translations, $text, $context, $domain)
 }
 
 
+//上传文件接管
+
+//add_filter('wp_handle_upload_prefilter', 'custom_upload_filter' );
+function custom_upload_filter( $file ) {
+
+    $file['name'] = 'wordpress-is-awesome-' . $file['name'];
+    return $file;
+}

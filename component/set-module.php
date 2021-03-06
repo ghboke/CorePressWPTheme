@@ -242,3 +242,25 @@
         在用户复制内容成功以后，自动添加本站网址(复制超过100个字生效)
     </div>
 </div>
+<h3>防红模块</h3>
+
+<div class="set-plane">
+    <div class="set-title">
+        引导外部浏览器打开
+    </div>
+    <div class="set-object">
+        <el-switch
+                v-model="set.module.preventred"
+                :active-value="1"
+                :inactive-value="0"
+        >
+        </el-switch>
+    </div>
+</div>
+<div class="set-plane">
+    <div class="set-title">
+    </div>
+    <div class="set-object">
+        使用QQ或者微信访问网站，引导用户使用浏览器打开
+    </div>
+</div>

@@ -43,7 +43,7 @@
         global $set;
         $logourl = $set['routine']['logo'];
         if ($logourl == '') {
-            echo '<a href="' . get_bloginfo('siteurl') . '"><h2>CorePress</h2></a>';
+            echo '<a href="' . get_bloginfo('url') . '"><h2>CorePress</h2></a>';
         } else {
             echo '<a href="/"><img src="' . $logourl . '" alt=""></a>';
         }
@@ -99,7 +99,6 @@
                                                    src="<?php echo corepress_get_avatar_url() ?>" alt=""><span
                                 class="user-menu-name"><?php echo corepress_get_user_nickname() ?></span></a>
                     <ul class="user-sub-menu">
-                        <li><a href="<?php echo admin_url('profile.php'); ?>"><i class="fas fa-user"></i> 个人中心</a></li>
                         <?php
                         if ($set['user']['usercenter'] == 1 && $set['user']['usercenterurl'] != null) {
                             echo ' <li><a href="' . $set['user']['usercenterurl'] . '"><i class="fas fa-user-cog"></i> 账号设置</a></li>';
@@ -116,7 +115,7 @@
                         }
 
                         ?>
-                        <li><a href="<?php echo wp_logout_url(get_bloginfo('siteurl')) ?>"><i
+                        <li><a href="<?php echo wp_logout_url(get_bloginfo('url')) ?>"><i
                                         class="fas fa-sign-out-alt"></i> 退出登录</a></li>
                     </ul>
                 </li>

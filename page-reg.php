@@ -4,6 +4,10 @@ if (islogin()) {
     header("Location: " . get_bloginfo('url'));
     exit();
 }
+if (!get_option('users_can_register')) {
+    header("Location: " . get_bloginfo('url'));
+    exit();
+}
 global $set;
 ?>
 <!doctype html>
@@ -144,7 +148,6 @@ if ($set['user']['regpageimg'] != null) {
                 addarelt('密码必须大于8位', 'erro');
                 return;
             }
-
 
 
             $('#login-note').text('正在注册，请稍后');

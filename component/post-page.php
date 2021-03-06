@@ -28,6 +28,14 @@ if ($corepress_post_meta['postrighttag']['open'] == 1) {
     <?php
 }
 ?>
+    <style>
+        .post-content{
+            box-shadow: 0 0 2px 0 rgba(98, 124, 153, .1);
+            margin-bottom: 10px;
+            background: #fff;
+            overflow: hidden;
+        }
+    </style>
     <div class="post-content">
         <h1 class="post-title">
             <?php the_title();
@@ -105,7 +113,8 @@ if ($corepress_post_meta['postrighttag']['open'] == 1) {
                         $('#qrcode-plane').addClass("share-plane-show");
                         e.stopPropagation();
                     });
-                    new QRCode($('#qrcode-img')[0], window.location.href);
+
+
                     $(this).next().animate({height: '100%'}, 500);
                     $('.zd-plane-title').click(function (e) {
                         if (!$(this).hasClass('zd-plane-title-zk')) {

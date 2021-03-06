@@ -112,7 +112,7 @@ if ($set['user']['lgoinpageimg'] != null) {
                 if (obj) {
                     if (obj.code === 1) {
                         $('#login-note').text('登录成功，跳转中');
-                        window.location.href = getQueryVariable('re') ? getQueryVariable('re') : '/';
+                        window.location.href = getQueryVariable('redirect_to') ? decodeURIComponent(getQueryVariable('redirect_to')) : '/';
                     } else {
                         $('#login-note').text(obj.msg);
                         recodeimg();

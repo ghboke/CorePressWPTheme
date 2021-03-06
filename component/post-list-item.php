@@ -29,6 +29,8 @@ if (has_post_thumbnail()) {
     }
 
 
+} else if ($postitem['post_meta']['thumbnail'] != '') {
+    $postitem['thumbnail'] = $postitem['post_meta']['thumbnail'];
 } else if ($set['routine']['autothumbnail'] == 1) {
     $preg = '/<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/i';
     preg_match($preg, $post->post_content, $imgArr);
@@ -46,6 +48,8 @@ if (function_exists('the_views')) {
 }
 $postitem['url'] = get_the_permalink();
 $postitem['author'] = get_the_author();
+$postitem['author_avatar'] = get_avatar(get_the_author_meta('email'), 24, '', '', array('class' => 'post-item-avatar'));
+
 
 $postitem['commentsnum'] = get_comments_number();
 $postitem['title'] = get_the_title();
@@ -67,7 +71,7 @@ if ($set['routine']['opennewlink'] == 1) {
 }
 if ($set['module']['imglazyload'] == 1) {
     $pathname = 'data-original';
-    $imgtag = '<img src="' . file_get_img_url('loading.png') . '" data-original="' . $postitem['thumbnail'] . '">';
+    $imgtag = '<img src="' . file_get_img_url('loading.gif') . '" data-original="' . $postitem['thumbnail'] . '">';
 } else {
     $imgtag = '<img src="' . $postitem['thumbnail'] . '">';
 }
@@ -90,24 +94,30 @@ if ($postitem['post_meta']['postshow'] == 1) {
         <div class="post-item-thumbnail-type1">
             <a href="<?php echo $postitem['url'] ?>" target="<?php echo $target; ?>"><?php echo $imgtag ?></a>
         </div>
+        <div class="post-item-tags post-item-tags-type1">
+            <?php
+            foreach ($postitem['category'] as $catite) {
+                ?>
+                <span class="cat-item"><a
+                            target="<?php echo $target ?>"
+                            href="<?php echo $catite->url ?>"><?php echo $catite->name ?></a></span>
+                <?php
+                break;
+            }
+            ?>
+        </div>
+
         <div class="post-item-content post-item-content-type1">
             <?php echo $postitem['content'] ?>
         </div>
         <div class="post-item-info post-item-info-type1">
-            <div class="post-item-tags">
-                <?php
-                foreach ($postitem['category'] as $catite) {
-                    ?>
-                    <i class="cat-item-mark"></i><span class="cat-item"><a
-                                target="<?php echo $target ?>"
-                                href="<?php echo $catite->url ?>"><?php echo $catite->name ?></a></span>
-                    <?php
-                }
-                ?>
-            </div>
+
             <div class="post-item-meta">
                 <div class="post-item-meta-time">
-                    <?php echo $postitem['author'] ?>
+                 <span class="post-item-meta-author">
+                               <?php echo $postitem['author_avatar'] .
+                                   $postitem['author'] ?>
+                            </span>
                     <span class="post-item-time"><?php echo diffBetweenTwoDay($postitem['time']); ?></span>
                 </div>
                 <div class="item-post-meta-other">
@@ -118,7 +128,7 @@ if ($postitem['post_meta']['postshow'] == 1) {
                         echo $postitem['views'] . '</span>';
                     }
                     ?>
-                    <span><i class="fas fa-comments"></i><?php echo $postitem['commentsnum'] ?></span>
+                    <span><i class="fas fa-comment-alt-lines"></i><?php echo $postitem['commentsnum'] ?></span>
                 </div>
             </div>
         </div>
@@ -130,6 +140,18 @@ if ($postitem['post_meta']['postshow'] == 1) {
         <div class="post-item-container">
             <div class="post-item-thumbnail">
                 <a href="<?php echo $postitem['url'] ?>" target="<?php echo $target; ?>"><?php echo $imgtag ?></a>
+            </div>
+            <div class="post-item-tags">
+                <?php
+                foreach ($postitem['category'] as $catite) {
+                    ?>
+                    <span class="cat-item"><a
+                                target="<?php echo $target ?>"
+                                href="<?php echo $catite->url ?>"><?php echo $catite->name ?></a></span>
+                    <?php
+                    break;
+                }
+                ?>
             </div>
             <div class="post-item-main">
                 <h2>
@@ -146,20 +168,12 @@ if ($postitem['post_meta']['postshow'] == 1) {
                     <?php echo $postitem['content'] ?>
                 </div>
                 <div class="post-item-info">
-                    <div class="post-item-tags">
-                        <?php
-                        foreach ($postitem['category'] as $catite) {
-                            ?>
-                            <i class="cat-item-mark"></i><span class="cat-item"><a
-                                        target="<?php echo $target ?>"
-                                        href="<?php echo $catite->url ?>"><?php echo $catite->name ?></a></span>
-                            <?php
-                        }
-                        ?>
-                    </div>
                     <div class="post-item-meta">
-                        <div class="post-item-meta-time">
-                            <?php echo $postitem['author'] ?>
+                        <div class="post-item-meta-item">
+                            <span class="post-item-meta-author">
+                               <?php echo $postitem['author_avatar'] .
+                                   $postitem['author'] ?>
+                            </span>
                             <span class="post-item-time"><?php echo diffBetweenTwoDay($postitem['time']); ?></span>
                         </div>
                         <div class="item-post-meta-other">
@@ -170,7 +184,7 @@ if ($postitem['post_meta']['postshow'] == 1) {
                                 echo $postitem['views'] . '</span>';
                             }
                             ?>
-                            <span><i class="fas fa-comments"></i><?php echo $postitem['commentsnum'] ?></span>
+                            <span><i class="fas fa-comment-alt-lines"></i><?php echo $postitem['commentsnum'] ?></span>
                         </div>
                     </div>
                 </div>
