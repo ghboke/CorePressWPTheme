@@ -43,7 +43,7 @@
         global $set;
         $logourl = $set['routine']['logo'];
         if ($logourl == '') {
-            echo '<a href="' . get_bloginfo('url') . '"><h2>CorePress</h2></a>';
+            echo '<a href="' . get_bloginfo('url') . '"><h2>' . get_bloginfo('name') . '</h2></a>';
         } else {
             echo '<a href="/"><img src="' . $logourl . '" alt=""></a>';
         }
